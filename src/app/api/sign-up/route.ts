@@ -22,20 +22,41 @@ export async function POST(request: Request) {
             )
         }
 
-        const exitingUserByNumber = await userModel.findOne({ number })
-        let OTP = Math.floor(Math.random() * 900000).toString();
+        const existingUserByNumber = await userModel.findOne({ number })
+        let newOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-        if (exitingUserByNumber) {
-            return Response.json(
-                {
-                    success: false,
-                    message: 'User already exists with this Number',
-                },
-                { status: 400 }
-            );
+        if (existingUserByNumber) {
+            if (existingUserByNumber.isVerified) {
+                return Response.json(
+                    {
+                        success: false,
+                        message: 'User already exists with this Number',
+                    },
+                    { status: 400 }
+                );
+            } else {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                existingUserByNumber.password = hashedPassword;
+                existingUserByNumber.otp = newOTP
+                existingUserByNumber.otpExpiry = new Date(Date.now() + 3600000)
+                await existingUserByNumber.save()
+            }
         } else {
             const hashedPassword = await bcrypt.hash(password, 10)
-            exitingUserByNumber.password = hashedPassword
+            const newExpiry = new Date();
+            newExpiry.setHours(newExpiry.getHours() + 1)
+
+            const updatedUser = new userModel({
+                firstName,
+                lastName,
+                password: hashedPassword,
+                address: '',
+                otp: newOTP,
+                otpExpiry: newExpiry,
+                number,
+                isVerified: false,
+                buckets: [],
+            })
         }
 
 

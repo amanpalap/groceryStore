@@ -27,7 +27,7 @@ export interface User extends Document {
     password: string
     address: string
     number: number
-    otp: number
+    otp: string
     otpExpiry: Date
     isVerified: boolean
     buckets: bucket[]
@@ -57,7 +57,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
         unique: true
     },
     otp: {
-        type: Number,
+        type: String,
         required: [true, 'OTP Code is required'],
     },
     otpExpiry: {
