@@ -22,8 +22,8 @@ const bucketSchema: Schema<bucket> = new mongoose.Schema({
 })
 
 export interface User extends Document {
-    name: string
-    email: string
+    firstName: string
+    lastName: string
     password: string
     address: string
     number: number
@@ -34,34 +34,35 @@ export interface User extends Document {
 }
 
 const UserSchema: Schema<User> = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
-        required: true
-
+        required: true,
+        unique: true
     },
-    email: {
+    lastName: {
         type: String,
+        required: true,
+        unique: true
     },
     password: {
         type: String,
-        required: true
+        required: [true, 'Password is required'],
     },
     address: {
         type: String,
-        required: true
     },
     number: {
         type: Number,
-        required: true,
+        required: [true, 'Mobile number is required'],
         unique: true
     },
     otp: {
         type: Number,
-        required: [true, 'Verify Code is required'],
+        required: [true, 'OTP Code is required'],
     },
     otpExpiry: {
         type: Date,
-        required: [true, 'Verify Code Expiry is required'],
+        required: [true, 'OTP Expiry is required'],
     },
     isVerified: {
         type: Boolean,
@@ -72,4 +73,6 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     }
 })
 
-const userModel = (mongoose.model.)
+const userModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User', UserSchema)
+
+export default userModel
