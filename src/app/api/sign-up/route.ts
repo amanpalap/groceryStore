@@ -2,49 +2,29 @@ import dbConnect from "@/lib/dbConnect";
 import userModel from "@/models/user";
 import bcrypt from 'bcryptjs'
 
-
 export async function POST(request: Request) {
+    console.log("Sign-up is runnig")
+
     await dbConnect()
     try {
         const { firstName, lastName, password, number } = await request.json()
 
-        const existingVerifiedUserByUsername = await userModel.findOne({
-            number,
-            isVerified: true
-        })
+        const user = await userModel.findOne({ number, })
+        let newOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-        if (!existingVerifiedUserByUsername) {
+        if (user) {
             return Response.json(
                 {
                     success: false,
-                    message: "User Already Exists"
-                }, { status: 400 }
-            )
-        }
-
-        const existingUserByNumber = await userModel.findOne({ number })
-        let newOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-        if (existingUserByNumber) {
-            if (existingUserByNumber.isVerified) {
-                return Response.json(
-                    {
-                        success: false,
-                        message: 'User already exists with this Number',
-                    },
-                    { status: 400 }
-                );
-            } else {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                existingUserByNumber.password = hashedPassword;
-                existingUserByNumber.otp = newOTP
-                existingUserByNumber.otpExpiry = new Date(Date.now() + 3600000)
-                await existingUserByNumber.save()
-            }
+                    message: 'user exists with this number',
+                },
+                { status: 400 }
+            );
         } else {
             const hashedPassword = await bcrypt.hash(password, 10)
-            const newExpiry = new Date();
-            newExpiry.setHours(newExpiry.getHours() + 1)
+            const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+
 
             const updatedUser = new userModel({
                 firstName,
@@ -57,8 +37,17 @@ export async function POST(request: Request) {
                 isVerified: false,
                 buckets: [],
             })
+
+            await updatedUser.save();
         }
 
+        return Response.json(
+            {
+                success: true,
+                message: 'User registered successfully. Please verify your account.',
+            },
+            { status: 201 }
+        );
 
     } catch (error: any) {
         console.log("Error registering user")

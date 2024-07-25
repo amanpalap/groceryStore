@@ -26,7 +26,7 @@ export interface User extends Document {
     lastName: string
     password: string
     address: string
-    number: number
+    number: string
     otp: string
     otpExpiry: Date
     isVerified: boolean
@@ -52,7 +52,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
         type: String,
     },
     number: {
-        type: Number,
+        type: String,
         required: [true, 'Mobile number is required'],
         unique: true
     },
