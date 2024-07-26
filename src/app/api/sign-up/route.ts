@@ -15,6 +15,7 @@ export async function POST(request: Request) {
         })
 
         if (existingUserVerified) {
+            console.log('user already exists with this email')
             return Response.json(
                 {
                     success: false,
@@ -24,26 +25,24 @@ export async function POST(request: Request) {
             );
         }
 
-        const existingUserNotVerified = await userModel.findOne({
-            email,
-            isVerified: false
-        })
+        const user = await userModel.findOne({ email })
 
         let newOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-        if (existingUserNotVerified) {
+        if (user) {
+            if (!user.isVerified) {
 
-            const hashedPassword = await bcrypt.hash(password, 10)
-            const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
-            existingUserNotVerified.password = hashedPassword
-            existingUserNotVerified.otp = newOTP
-            existingUserNotVerified.otpExpiry = newExpiry
+                const hashedPassword = await bcrypt.hash(password, 10)
+                const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
+                user.password = hashedPassword
+                user.otp = newOTP
+                user.otpExpiry = newExpiry
+                await user.save()
+                console.log('user already exists not verified')
 
-        }
-
-        const user = userModel.findOne({ email })
-
-        if (!user) {
+            }
+        } else {
+            console.log('new user')
 
             const hashedPassword = await bcrypt.hash(password, 10)
             const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
@@ -62,11 +61,14 @@ export async function POST(request: Request) {
             })
 
             await updatedUser.save();
+
         }
 
         const emailResponse = await sendVerificationEmail(email, firstName, lastName, newOTP)
 
         if (!emailResponse.success) {
+            console.log('user already exists not verified')
+
             return Response.json(
                 {
                     success: false,
@@ -76,8 +78,6 @@ export async function POST(request: Request) {
             );
         }
 
-
-
         return Response.json(
             {
                 success: true,
@@ -85,6 +85,8 @@ export async function POST(request: Request) {
             },
             { status: 201 }
         );
+
+
 
     } catch (error: any) {
         console.log("Error registering user", error)
