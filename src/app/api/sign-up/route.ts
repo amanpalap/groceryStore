@@ -38,7 +38,26 @@ export async function POST(request: Request) {
                 user.otp = newOTP
                 user.otpExpiry = newExpiry
                 await user.save()
-                console.log('user already exists not verified')
+
+                const emailResponse = await sendVerificationEmail(email, firstName, lastName, newOTP)
+
+                if (!emailResponse.success) {
+                    return Response.json(
+                        {
+                            success: false,
+                            message: 'email not sent',
+                        },
+                        { status: 400 }
+                    );
+                }
+
+                return Response.json(
+                    {
+                        success: true,
+                        message: 'user already exists but Not Verified',
+                    },
+                    { status: 400 }
+                );
 
             }
         } else {
@@ -67,8 +86,6 @@ export async function POST(request: Request) {
         const emailResponse = await sendVerificationEmail(email, firstName, lastName, newOTP)
 
         if (!emailResponse.success) {
-            console.log('user already exists not verified')
-
             return Response.json(
                 {
                     success: false,

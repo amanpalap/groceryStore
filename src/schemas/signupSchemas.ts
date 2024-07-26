@@ -1,20 +1,20 @@
 import { z } from 'zod'
 
-export const firstNameValidation = z
+const nameValidation = z
     .string()
-    .min(2, 'firstname must be at least 2 characters')
-    .max(20, 'firstname must be no more than 20 characters')
-    .regex(/^[A-Za-z]+$/, 'firstname must not contain special characters')
-
-export const lastNameValidation = z
-    .string()
-    .min(2, 'firstname must be at least 2 characters')
-    .max(20, 'firstname must be no more than 20 characters')
-    .regex(/^[A-Za-z]+$/, 'firstname must not contain special characters')
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(20, 'Name must be less than 20 characters')
+    .regex(/^[A-Za-z\u00E0-\u00FC]+$/, 'Name must not contain special characters and spaces')
 
 export const signupSchema = z.object({
-    firtName: firstNameValidation,
-    lastName: lastNameValidation,
-    email: z.string().email('invalid email'),
-    password: z.string().min(8, 'password must be at least 8 characters'),
+    firstName: nameValidation,
+    lastName: nameValidation,
+    email: z
+        .string()
+        .email('Invalid email')
+        .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email format'),
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters')
 })
