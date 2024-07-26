@@ -24,6 +24,7 @@ const bucketSchema: Schema<bucket> = new mongoose.Schema({
 export interface User extends Document {
     firstName: string
     lastName: string
+    email: string
     password: string
     address: string
     number: string
@@ -37,12 +38,20 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
     lastName: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
     },
     password: {
         type: String,
@@ -53,7 +62,6 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     },
     number: {
         type: String,
-        required: [true, 'Mobile number is required'],
         unique: true
     },
     otp: {
