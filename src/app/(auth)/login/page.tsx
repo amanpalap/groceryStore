@@ -58,6 +58,8 @@ export default function LoginPage() {
                 description: errorMessage,
                 variant: 'destructive',
             });
+        } finally {
+            setIsSubmitting(false)
         }
     }
 

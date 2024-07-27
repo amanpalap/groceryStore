@@ -53,6 +53,9 @@ export default function LoginPage() {
                 title: "User Verified",
                 description: response.data.message
             })
+
+            router.replace('/login')
+
         } catch (error) {
             console.log("Error while verifying", error)
 

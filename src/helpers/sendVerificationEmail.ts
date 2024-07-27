@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/types/ApiResponse';
 import nodemailer from 'nodemailer'
 
 export async function sendEmail(
@@ -5,35 +6,39 @@ export async function sendEmail(
     firstName: string,
     lastName: string,
     newOTP: string
-) {
+): Promise<ApiResponse> {
     try {
         var transport = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
+            service: "gmail",
+            secure: true,
             port: 2525,
             auth: {
-                user: "ae58ec35aed09f",
-                pass: "c126762750eaee"
+                user: process.env.NODEMAILER_USERNAME,
+                pass: process.env.NODEMAILER_PASSWORD
             }
         });
 
         const mailOptions = {
-            from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
+            from: 'apexesports.bgmi@gmail.com', // sender address
             to: email, // list of receivers
             subject: "Grocers || Verification Code", // Subject line
-            html: "<b>Hello world?</b>", // html body
+            html: `<b>Hello ${firstName + ' ' + lastName}</b>
+                    <br><br>
+                    your OTP: <b>${newOTP}</b>`, // html body
         }
 
-        const mailResponse = await transporter.sendMail(mailOptions)
+        await transport.sendMail(mailOptions);
 
-        return mailResponse
+        return {
+            success: true,
+            message: 'mail sent successfully'
+        }
 
     } catch (emailError) {
         console.log("Error sending verification Email", emailError);
-        return Response.json(
-            {
-                success: false,
-                message: "failed to send verification email"
-            }, { status: 500 }
-        )
+        return {
+            success: false,
+            message: 'Error sending mail'
+        }
     }
 }
