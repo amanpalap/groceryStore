@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { ApiResponse } from "@/types/ApiResponse"
 import { Loader2 } from "lucide-react"
+import Link from "next/link"
 
 
 export default function SignupPage() {
@@ -72,8 +73,8 @@ export default function SignupPage() {
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen">
-            <div className="border-2 p-10 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
-                <h1 className="w-1/2 text-center text-3xl font-serif bg-white text-black rounded-xl">SIGN-UP</h1>
+            <div className="border-2 p-10 bg-slate-800 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
+                <h1 className="w-1/2 font-bold text-center text-3xl font-mono bg-white text-black rounded-xl">SIGN-UP</h1>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 justify-between w-full flex flex-wrap">
@@ -154,6 +155,15 @@ export default function SignupPage() {
                         )}
                         </Button>
                     </form>
+                    <div className="text-center mt-4">
+                        <p>
+                            Already a member?{' '}
+                            <Link href="/login" className="text-blue-600 hover:text-blue-800">
+                                Login
+                            </Link>
+                        </p>
+                    </div>
+
                 </Form>
             </div>
         </div>

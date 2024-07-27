@@ -19,6 +19,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LoginPage() {
 
@@ -65,8 +66,8 @@ export default function LoginPage() {
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen">
-            <div className="border-2 p-10 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
-                <h1 className="w-1/2 text-center text-3xl font-serif bg-white text-black rounded-xl">LOGIN</h1>
+            <div className="border-2 p-10 bg-slate-800 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
+                <h1 className="w-1/2 text-center text-3xl font-mono bg-white text-black rounded-xl font-bold">LOGIN</h1>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 justify-between w-full flex flex-wrap">
@@ -111,9 +112,18 @@ export default function LoginPage() {
                         )}
                         </Button>
                     </form>
+                    <div className="text-center mt-4">
+                        <p>
+                            Already a member?{' '}
+                            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+                                Sign in
+                            </Link>
+                        </p>
+                    </div>
+
                 </Form>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

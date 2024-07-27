@@ -76,7 +76,7 @@ export default function LoginPage() {
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen">
-            <div className="border-2 p-10 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
+            <div className="border-2 bg-slate-800 p-10 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
                 <h1 className="w-1/2 text-center text-3xl font-serif bg-white text-black rounded-xl">VERIFICATION</h1>
 
                 <Form {...form}>
