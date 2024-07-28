@@ -1,10 +1,10 @@
 'use client'
-import { AppleCardsCarouselDemo } from '@/components/carousal'
+import { CarouselPlugin } from '@/components/carousal'
 
 export default function page() {
     return (
         <div>
-            <AppleCardsCarouselDemo />
+            <CarouselPlugin />
         </div>
     )
 }
