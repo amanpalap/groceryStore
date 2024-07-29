@@ -1,7 +1,5 @@
 import * as React from "react"
 import Autoplay from "embla-carousel-autoplay"
-
-import { Card, CardContent } from "@/components/ui/card"
 import {
     Carousel,
     CarouselContent,
@@ -21,13 +19,8 @@ export function CarouselPlugin() {
             className="w-full max-w-xs"
         >
             <CarouselContent>
-                {Array.from({ length: 5 }).map((_, index) => (
-                    <CarouselItem key={index}>
-                        <div className="w-full p-1">
-
-                        </div>
-                    </CarouselItem>
-                ))}
+                <CarouselItem>
+                </CarouselItem>
             </CarouselContent>
             <CarouselPrevious />
             <CarouselNext />
