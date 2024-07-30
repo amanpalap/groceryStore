@@ -1,9 +1,11 @@
+import { IndianRupee, ShoppingCart } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react'
 
 export default function ProductCard() {
 
     const products = [
-        { names: ["Carrot", "गाजर"], price: "40/kg", image: "carrot.jpg", category: "Vegetables" },
+        { names: ["Carrot", "गाजर"], price: "40/kg", image: "/carrot.jpg", category: "Vegetables" },
         { names: ["Radish", "मूली"], price: "25/kg", image: "radish.jpg", category: "Vegetables" },
         { names: ["Brinjal", "बैंगन"], price: "45/kg", image: "brinjal.jpg", category: "Vegetables" },
         { names: ["Onion", "प्याज"], price: "35/kg", image: "onion.jpg", category: "Vegetables" },
@@ -58,13 +60,19 @@ export default function ProductCard() {
 
     return (
         products.map((items, index) => (
-            <div className='border-2 w-60 flex flex-wrap '>
-                <h2 className='flex flex-wrap items-center justify-between'>
-                    {items.names[0]}
-                    <span>{items.names[1]}</span>
-                </h2>
-                <p>Price: {items.price}</p>
-                <img className="w-full" src={items.image} alt={items.names[0]} />
+            <div className='flex flex-wrap space-y-2 rounded-3xl overflow-hidden my-8 mx-8 border-8'>
+                <img src={items.image} alt={items.names[0]} className='h-52' />
+                <div className='flex flex-wrap w-full items-center justify-between px-3'>
+                    <h2 className='w-full'>{items.names[0]}</h2>
+                    <h2>( {items.names[1]} )</h2>
+                </div>
+                <div className='flex w-full pl-3 justify-between items-center'>
+                    <p className='flex items-center'><IndianRupee size={16} />{items.price}</p>
+                    <button className='bg-green-500 rounded-tl-3xl px-3 justify-between py-2 flex'>
+                        Add to <ShoppingCart />
+                    </button>
+                </div>
+
             </div>
         ))
     )

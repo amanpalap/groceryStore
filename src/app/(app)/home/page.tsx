@@ -8,7 +8,7 @@ export default function page() {
             <div className='flex items-center justify-center w-full'>
                 <CarouselPlugin />
             </div>
-            <div>
+            <div className='w-full grid grid-cols-5'>
                 <ProductCard />
             </div>
         </div>
