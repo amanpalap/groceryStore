@@ -28,7 +28,7 @@ export function CarouselPlugin() {
 
     ]
     const plugin = React.useRef(
-        Autoplay({ delay: 4000 })
+        Autoplay({ delay: 2000, stopOnInteraction: false })
     )
 
     return (
@@ -39,7 +39,7 @@ export function CarouselPlugin() {
             <CarouselContent className="w-full border-2">
                 {data.map((data, indes) => (
                     <CarouselItem className="w-full h-80">
-                        <Image src={data.img} alt={"image"} className="w-full center"></Image>
+                        <Image src={data.img} alt={"image"} className="w-full self-stretch center"></Image>
                     </CarouselItem>
 
                 ))}
