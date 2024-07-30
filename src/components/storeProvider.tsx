@@ -7,6 +7,7 @@ import { add } from '@/lib/store/features/cart/cartSlice'
 export default function StoreProvider({
     children,
 }: {
+    productId: number
     children: React.ReactNode
 }) {
     const storeRef = useRef<AppStore>()

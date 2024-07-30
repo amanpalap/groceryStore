@@ -17,12 +17,15 @@ export function CarouselPlugin() {
 
     const data = [
         {
+            id: 1,
             img: a
         },
         {
+            id: 2,
             img: b
         },
         {
+            id: 3,
             img: c
         },
 
@@ -37,8 +40,8 @@ export function CarouselPlugin() {
             className="w-full"
         >
             <CarouselContent className="w-full border-2">
-                {data.map((data, indes) => (
-                    <CarouselItem className="w-full h-80">
+                {data.map((data) => (
+                    <CarouselItem className="w-full h-80" key={data.id}>
                         <Image src={data.img} alt={"image"} className="w-full self-stretch center"></Image>
                     </CarouselItem>
 

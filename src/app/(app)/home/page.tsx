@@ -4,7 +4,7 @@ import ProductCard from '@/components/ProductCard'
 
 export default function page() {
     return (
-        <div>
+        <div className='flex flex-wrap'>
             <div className='flex items-center justify-center w-full'>
                 <CarouselPlugin />
             </div>
