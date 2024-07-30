@@ -4,7 +4,6 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
     IconArrowLeft,
     IconBrandTabler,
-    IconSettings,
     IconUserBolt,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -14,7 +13,7 @@ import Image from "next/image";
 export function SidebarDemo() {
     const links = [
         {
-            label: "Dashboard",
+            label: "Home",
             href: "#",
             icon: (
                 <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -25,13 +24,6 @@ export function SidebarDemo() {
             href: "#",
             icon: (
                 <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-            ),
-        },
-        {
-            label: "Settings",
-            href: "#",
-            icon: (
-                <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
             ),
         },
         {
@@ -87,7 +79,7 @@ export const Logo = () => {
                 animate={{ opacity: 1 }}
                 className="font-medium text-black dark:text-white whitespace-pre"
             >
-                Acet Labs
+                Green Grocers
             </motion.span>
         </Link>
     );

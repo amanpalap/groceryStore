@@ -58,10 +58,13 @@ export default function ProductCard() {
 
     return (
         products.map((items, index) => (
-            <div>
-                <h2>{items.names[0]}</h2>
+            <div className='border-2 w-60 flex flex-wrap '>
+                <h2 className='flex flex-wrap items-center justify-between'>
+                    {items.names[0]}
+                    <span>{items.names[1]}</span>
+                </h2>
                 <p>Price: {items.price}</p>
-                <img src={items.image} alt={items.names[0]} />
+                <img className="w-full" src={items.image} alt={items.names[0]} />
             </div>
         ))
     )

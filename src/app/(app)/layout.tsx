@@ -10,7 +10,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <div className="w-auto z-50 fixed">
         <SidebarDemo />
       </div>
-      <div className="ml-16 border-2">
+      <div className="lg:ml-16 md:ml-16 border-2">
         {children}
       </div>
     </div>
