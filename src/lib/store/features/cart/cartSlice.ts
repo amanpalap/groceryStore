@@ -1,4 +1,3 @@
-// cartSlice.js
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Product {
@@ -9,14 +8,16 @@ interface Product {
     category: string;
 }
 
+const initialState: Product[] = [];
+
 const cartSlice = createSlice({
     name: 'cart',
-    initialState: [] as Product[],
+    initialState,
     reducers: {
         add: (state, action: PayloadAction<Product>) => {
             state.push(action.payload);
         },
-        // other reducers
+        // other reducers can be added here
     },
 });
 

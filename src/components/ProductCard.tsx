@@ -12,7 +12,8 @@ interface Product {
 }
 
 export default function ProductCard() {
-    const dispatch = useAppDispatch
+    const dispatch = useAppDispatch()
+
     const products: Product[] = [
         { id: 1, names: ["Carrot", "गाजर"], price: "40/kg", image: "", category: "Vegetables" },
         { id: 2, names: ["Radish", "मूली"], price: "25/kg", image: "", category: "Vegetables" },
@@ -31,7 +32,7 @@ export default function ProductCard() {
         { id: 15, names: ["Methi (Fenugreek)", "मेथी"], price: "40/kg", image: "", category: "Vegetables" },
         { id: 16, names: ["Ginger", "अदरक"], price: "80/kg", image: "", category: "Vegetables" },
         { id: 17, names: ["Okra (Lady Finger)", "भिंडी"], price: "60/kg", image: "", category: "Vegetables" },
-        { id: 18, names: ["Bottle Gourd", "lauki", "लौकी"], price: "35/kg", image: "", category: "Vegetables" },
+        { id: 18, names: ["Bottle Gourd", "लौकी"], price: "35/kg", image: "", category: "Vegetables" },
         { id: 19, names: ["Cabbage", "पत्ता गोभी"], price: "30/kg", image: "", category: "Vegetables" },
         { id: 20, names: ["Sweet Potato", "शकरकंद"], price: "40/kg", image: "", category: "Vegetables" },
         { id: 21, names: ["French Beans", "फ्रेंच बीन्स"], price: "70/kg", image: "", category: "Vegetables" },
@@ -68,11 +69,8 @@ export default function ProductCard() {
     ];
 
     const handleAddToCart = (product: Product) => {
-        try {
-            dispatch(add(product)); // Ensure you're passing the correct payload
-        } catch (error) {
-            console.error('Error adding product to cart:', error);
-        } // Ensure you're passing the correct payload
+        dispatch(add(product))
+        console.log(product)
     };
 
     return (
