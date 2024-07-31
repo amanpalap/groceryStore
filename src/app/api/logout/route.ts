@@ -1,14 +1,16 @@
 import dbConnect from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
+import { getDecodedToken } from "@/helpers/getDecodedToken";
 
-export async function GET(response: Response) {
+export async function GET(response: NextResponse) {
     await dbConnect()
 
     try {
         const response = NextResponse.json({
             message: "Logout Successfull",
             success: true
-        })
+        }, { status: 200 }
+        )
 
         response.cookies.set("token", "", {
             httpOnly: true,
@@ -19,9 +21,9 @@ export async function GET(response: Response) {
 
     } catch (error) {
         console.log("Logout Failed", error)
-        return Response.json(
+        return NextResponse.json(
             {
-                success: true,
+                success: false,
                 message: "Logout Failed",
             },
             { status: 500 }

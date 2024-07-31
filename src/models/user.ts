@@ -26,6 +26,7 @@ export interface User extends Document {
     lastName: string
     email: string
     password: string
+    //TODO: Address should contain more detail like pincode, landmark, locality etc
     address: string
     number: string
     otp: string

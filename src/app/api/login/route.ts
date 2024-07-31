@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     await dbConnect()
+
     try {
         const { email, password } = await request.json()
 
@@ -48,18 +49,18 @@ export async function POST(request: NextRequest) {
 
         const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: '1d' })
 
-        const reponse = NextResponse.json(
+
+        const response = NextResponse.json(
             {
                 success: true,
                 message: "Login successfull",
             }
         )
-        reponse.cookies.set("token", token, {
+        response.cookies.set("token", token, {
             httpOnly: true
         })
 
-        return reponse
-
+        return response
 
     } catch (error) {
         console.log("Error in login")
