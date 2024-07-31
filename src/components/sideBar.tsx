@@ -9,19 +9,23 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { ShoppingCart } from "lucide-react";
+import { useAppSelector } from "@/lib/store/hooks/hooks";
+import { Span } from "next/dist/trace";
 
 export function SidebarDemo() {
+    const items = useAppSelector((state) => state.cart)
     const links = [
         {
             label: "Home",
-            href: "#",
+            href: '/home',
             icon: (
                 <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
             ),
         },
         {
             label: "Profile",
-            href: "#",
+            href: "/profile",
             icon: (
                 <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
             ),
@@ -45,6 +49,19 @@ export function SidebarDemo() {
                             <SidebarLink key={idx} link={link} />
                         ))}
                     </div>
+                    <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+                        <div className="mt-8 flex space-x-6">
+                            <span className="flex">
+                                <ShoppingCart className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+                                {items.length > 0 && <span className="w-1 relative bottom-0 rounded-full p-2 text-center justify-center flex items-center h-1 bg-red-500 -translate-x-2 translate-y-3 font-bold text-xs -mr-4">
+                                    {items.length}
+                                </span>}
+                            </span>
+                            <Link className="text-sm hover:translate-x-1 animation-tanslate duration-150" href={"/cart"}>Cart</Link>
+
+                        </div>
+                    </div>
+
                 </div>
                 <div>
                     <SidebarLink
