@@ -4,7 +4,7 @@ import userModel from "@/models/user";
 import { NextResponse, NextRequest } from "next/server";
 
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
     await dbConnect();
 
     try {
@@ -26,18 +26,23 @@ export async function POST(request: NextRequest) {
             }, { status: 401 });
         }
 
-        console.log("Decoded Data:", decodedData);
+        console.log("Decoded Data");
 
         const { address, number } = await request.json()
 
         const user = await userModel.findOne({ number })
+        console.log("Decoded Data");
 
         if (user) {
+            console.log("Decoded Data");
+
             return NextResponse.json({
                 success: true,
                 message: "This number is already used by another account",
             }, { status: 400 })
         }
+
+        console.log("Decoded Data");
 
         const existingUser = await userModel.findOne({ _id: decodedData.id })
 

@@ -46,6 +46,7 @@ export default function LoginPage() {
                 title: "loggedin successfully",
                 description: response.data.message
             })
+            router.replace("/home")
         } catch (error) {
             console.log("Error while login", error)
 
@@ -59,6 +60,8 @@ export default function LoginPage() {
                 description: errorMessage,
                 variant: 'destructive',
             });
+
+
         } finally {
             setIsSubmitting(false)
         }
