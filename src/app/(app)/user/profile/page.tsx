@@ -1,6 +1,5 @@
 'use client'
 import { userUpdateSchemas } from "@/schemas/userUpdateSchemas"
-import { useParams } from "next/navigation"
 import {
     Form,
     FormControl,
@@ -11,8 +10,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
-import Link from "next/link"
+import { Loader2, Mail, Slice } from "lucide-react"
 import { useForm } from "react-hook-form"
 import * as z from 'zod';
 import { useEffect, useState } from "react"
@@ -20,13 +18,12 @@ import { Button } from "@/components/ui/button"
 import axios, { AxiosError } from "axios"
 import { useToast } from "@/components/ui/use-toast"
 import { ApiResponse } from "@/types/ApiResponse"
-
-
+import { UserData } from "@/types/userData"
 
 const page = () => {
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [data, setData] = useState({})
+    const [data, setData] = useState<UserData | null>(null)
 
     const form = useForm<z.infer<typeof userUpdateSchemas>>({
         resolver: zodResolver(userUpdateSchemas),
@@ -40,6 +37,10 @@ const page = () => {
     })
 
     const { reset } = form;
+
+    const capitalizeFirstLetter = (str: string): string => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    }
 
     const onSubmit = async (data: z.infer<typeof userUpdateSchemas>) => {
         setIsSubmitting(true);
@@ -95,12 +96,16 @@ const page = () => {
 
     }, [reset])
 
-
-
     return (
         <div className="flex justify-center items-center w-full min-h-screen">
             <div className="border-2 p-10 bg-slate-800 rounded-xl justify-center flex flex-wrap space-y-8 max-w-xl">
-                <h1 className="w-1/2 font-bold text-center text-3xl font-mono bg-white text-black rounded-xl">Your Profile</h1>
+                {data &&
+                    <div className="w-full flex flex-wrap justify-center items-center space-y-2">
+                        <h1 className="px-4 w-full font-bold text-center text-3xl font-serif bg-white text-black rounded-xl">Welcome : {capitalizeFirstLetter(data.firstName) + " " + capitalizeFirstLetter(data.lastName)}
+                        </h1>
+                        <p className="flex w-full justify-center items-center"><Mail size={20} className="mr-2" /> : {data.email} </p>
+                    </div>
+                }
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 justify-between w-full flex flex-wrap">
