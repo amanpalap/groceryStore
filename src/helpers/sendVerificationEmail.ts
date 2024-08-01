@@ -19,9 +19,9 @@ export async function sendEmail(
         });
 
         const mailOptions = {
-            from: 'apexesports.bgmi@gmail.com', // sender address
+            from: 'greengrocersofficial@gmail.com', // sender address
             to: email, // list of receivers
-            subject: "Grocers || Verification Code", // Subject line
+            subject: "Green Grocers || Verification Code", // Subject line
             html: `<b>Hello ${firstName + ' ' + lastName}</b>
                     <br><br>
                     your OTP: <b>${newOTP}</b>`, // html body
