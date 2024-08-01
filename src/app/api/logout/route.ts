@@ -1,8 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
-import { NextResponse } from "next/server";
-import { getDecodedToken } from "@/helpers/getDecodedToken";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(response: NextResponse) {
+export async function GET(request: NextRequest) {
     await dbConnect()
 
     try {

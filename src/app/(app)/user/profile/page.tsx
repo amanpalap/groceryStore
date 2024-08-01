@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 import axios, { AxiosError } from "axios"
 import { useToast } from "@/components/ui/use-toast"
 import { ApiResponse } from "@/types/ApiResponse"
-import { UserData } from "@/types/userData"
+import { UserData } from "@/types/UserData"
 
 const page = () => {
     const { toast } = useToast()
