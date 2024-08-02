@@ -89,7 +89,8 @@ export function SidebarDemo() {
                                     </div>
                                 ) : (
                                     'LogOut'
-                                )}</Link>
+                                )}
+                            </Link>
                         </div>
 
                         <div className="mt-4 flex space-x-6">
