@@ -46,7 +46,7 @@ export default function LoginPage() {
                 title: "loggedin successfully",
                 description: response.data.message
             })
-            router.replace("/home")
+            router.push("/home")
         } catch (error) {
             console.log("Error while login", error)
 
