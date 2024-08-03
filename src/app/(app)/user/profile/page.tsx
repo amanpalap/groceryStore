@@ -74,31 +74,31 @@ const page = () => {
         }
     }
 
-    // useEffect(() => {
-    //     const handleData = async () => {
-    //         console.log("opening")
-    //         try {
-    //             const response = await axios.get('/api/profile')
-    //             const data = response.data.data
-    //             setData(data)
-    //             reset(data)
-    //         } catch (error) {
-    //             console.log("Error while login", error)
+    useEffect(() => {
+        const handleData = async () => {
+            console.log("opening")
+            try {
+                const response = await axios.get('/api/profile')
+                const data = response.data.data
+                setData(data)
+                reset(data)
+            } catch (error) {
+                console.log("Error while login", error)
 
-    //             let axiosError = error as AxiosError<ApiResponse>
+                let axiosError = error as AxiosError<ApiResponse>
 
-    //             let errorMessage = axiosError.response?.data.message ||
-    //                 ('There was error while getting profile. Please try again.');
+                let errorMessage = axiosError.response?.data.message ||
+                    ('There was error while getting profile. Please try again.');
 
-    //             toast({
-    //                 title: 'Updation Failed',
-    //                 description: errorMessage,
-    //                 variant: 'destructive',
-    //             });
-    //         }
-    //     }
-    //     handleData()
-    // }, [reset])
+                toast({
+                    title: 'Updation Failed',
+                    description: errorMessage,
+                    variant: 'destructive',
+                });
+            }
+        }
+        handleData()
+    }, [reset])
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen">
