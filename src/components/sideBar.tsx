@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Loader2, LogOut, ShoppingCart } from "lucide-react";
+import { Loader2, LogIn, LogOut, ShoppingCart } from "lucide-react";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
 import { useToast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
@@ -38,6 +38,21 @@ export function SidebarDemo() {
                 <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
             ),
         },
+        {
+            label: "Login",
+            href: "/login",
+            icon: (
+                <LogIn className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+
+            ),
+        },
+        {
+            label: "Sign-up",
+            href: "/sign-up",
+            icon: (
+                <LogIn className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+            ),
+        },
     ];
 
 
@@ -49,7 +64,7 @@ export function SidebarDemo() {
                 title: 'success',
                 description: 'Logged out Successfully'
             })
-            router.replace('/login')
+            router.push('/login')
         } catch (error) {
             console.error('Error during sign-up:', error); // eslint-disable-line no-console
 
