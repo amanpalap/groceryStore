@@ -39,16 +39,16 @@ export function CarouselPlugin() {
             plugins={[plugin.current]}
             className="w-full"
         >
-            <CarouselContent className="w-full border-2">
+            <CarouselContent className="w-full">
                 {data.map((data) => (
-                    <CarouselItem className="w-full h-80" key={data.id}>
-                        <Image src={data.img} alt={"image"} className="w-full self-stretch center"></Image>
+                    <CarouselItem className="w-full lg:h-80" key={data.id}>
+                        <Image src={data.img} alt={"image"} className="flex items-center justify-center w-full lg:h-auto h-60"></Image>
                     </CarouselItem>
 
                 ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious className=" lg:visible hidden" />
+            <CarouselNext className=" lg:visible hidden" />
         </Carousel>
     )
 }
