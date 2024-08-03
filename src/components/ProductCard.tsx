@@ -14,14 +14,6 @@ interface Product {
 export default function ProductCard() {
     const dispatch = useAppDispatch()
 
-    type Product = {
-        id: number;
-        names: string[];
-        price: string;
-        image: string;
-        category: string;
-    };
-
     const products: Product[] = [
         { id: 22, names: ["Beetroot", "चुकंदर"], price: "60/kg", image: "/beetroot.jpeg", category: "Vegetables" },
         { id: 44, names: ["Bitter Gourd", "करेला"], price: "80/kg", image: "/bitter_gourd.jpg", category: "Vegetables" },
@@ -39,7 +31,7 @@ export default function ProductCard() {
         { id: 29, names: ["Colocasia", "अरबी"], price: "60/kg", image: "/colocasia.jpeg", category: "Vegetables" },
         { id: 24, names: ["Coriander Leaves", "धनिया"], price: "160/kg", image: "/coriander.jpeg", category: "Vegetables" },
         { id: 8, names: ["Capsicum", "शिमला मिर्च"], price: "120/kg", image: "/capsicum.jpeg", category: "Vegetables" },
-        { id: 17, names: ["Cucumber", "खीरा"], price: "40/kg", image: "/cucumber.jpg", category: "Vegetables" },
+        { id: 17, names: ["Cucumber", "खीरा"], price: "40/kg", image: "/cucumber.jpeg", category: "Vegetables" },
         { id: 40, names: ["Drumstick", "सहजन"], price: "280/kg", image: "/drumstick.jpg", category: "Vegetables" },
         { id: 39, names: ["Methi (Fenugreek)", "मेथी"], price: "200/kg", image: "/methi.jpg", category: "Vegetables" },
         { id: 7, names: ["Ginger", "अदरक"], price: "200/kg", image: "/ginger.jpeg", category: "Vegetables" },
@@ -80,7 +72,7 @@ export default function ProductCard() {
     return (
         products.map((item) => (
             <div key={item.id} className='flex flex-wrap space-y-2 rounded-3xl overflow-hidden my-6 lg:my-8 mx-4 lg:mx-8 border'>
-                <Image src={item.image} alt={item.names[0]} width={200} height={200} className="lg:h-52 h-36 center" />
+                <Image src={item.image} alt={item.names[0]} width={200} height={200} className="lg:h-52 h-48 w-full" />
                 <div className='flex flex-wrap w-full items-center justify-between px-3'>
                     <h2 className='w-full'>{item.names[0]}</h2>
                     <h2>( {item.names[1]} )</h2>
