@@ -81,16 +81,18 @@ export function SidebarDemo() {
                             <span className="flex">
                                 <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                             </span>
-                            <Link onClick={handleLogout} className="text-sm hover:translate-x-1 animation-tanslate duration-150" href={"/login"}>
+                            <div onClick={handleLogout} className="text-sm hover:translate-x-1 animation-tanslate duration-150" >
                                 {isSubmitting ? (
                                     <div className="w-full flex">
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         Please wait
                                     </div>
                                 ) : (
-                                    'LogOut'
+                                    <span className="cursor-pointer">
+                                        LogOut
+                                    </span>
                                 )}
-                            </Link>
+                            </div>
                         </div>
 
                         <div className="mt-4 flex space-x-6">
@@ -100,7 +102,7 @@ export function SidebarDemo() {
                                     {items.length}
                                 </span>}
                             </span>
-                            <Link className="text-sm hover:translate-x-1 animation-tanslate duration-150" href={"/user/cart"}>Cart</Link>
+                            <Link className="text-sm hover:translate-x-1 animation-tanslate duration-150" href="/user/cart">Cart</Link>
                         </div>
 
                     </div>
