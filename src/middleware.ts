@@ -3,10 +3,10 @@ import { NextResponse, NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
     console.log("middleware running")
     try {
-        const token = request.cookies.get('token')?.name;
+        const token = request.cookies.get('token')?.name || false
         const url = request.nextUrl;
 
-        if (token) console.log(token)
+        console.log(token)
 
         // Redirect logged-in users trying to access login, sign-up, or verify pages to /home
         if (token && (url.pathname.startsWith('/login') || url.pathname.startsWith('/sign-up') || url.pathname.startsWith('/verify'))) {

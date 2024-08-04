@@ -65,6 +65,7 @@ export function SidebarDemo() {
                 description: 'Logged out Successfully'
             })
             router.push('/login')
+            console.log("pushing to logout")
         } catch (error) {
             console.error('Error during sign-up:', error); // eslint-disable-line no-console
 

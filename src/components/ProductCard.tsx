@@ -2,6 +2,8 @@ import { add } from '@/lib/store/features/cart/cartSlice';
 import { useAppDispatch } from '@/lib/store/hooks/hooks';
 import { IndianRupee, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
+import Cookies from 'js-cookie';
+import { isUserLoggedIn } from '@/helpers/isUserLoggedIn';
 
 interface Product {
     id: number;
@@ -12,6 +14,10 @@ interface Product {
 }
 
 export default function ProductCard() {
+
+    const cookies = Cookies.get('token') || ''
+
+
     const dispatch = useAppDispatch()
 
     const products: Product[] = [
@@ -67,12 +73,13 @@ export default function ProductCard() {
     const handleAddToCart = (product: Product) => {
         dispatch(add(product))
         console.log(product)
+        console.log(cookies)
     };
 
     return (
         products.map((item) => (
             <div key={item.id} className='flex flex-wrap space-y-2 rounded-3xl overflow-hidden my-6 lg:my-8 mx-4 lg:mx-8 border'>
-                <Image src={item.image} alt={item.names[0]} width={200} height={200} className="lg:h-52 h-48 w-full" />
+                <Image src={item.image} alt={item.names[0]} width={200} height={200} className="lg:h-44 h-44 w-full" />
                 <div className='flex flex-wrap w-full items-center justify-between px-3'>
                     <h2 className='w-full'>{item.names[0]}</h2>
                     <h2>( {item.names[1]} )</h2>
