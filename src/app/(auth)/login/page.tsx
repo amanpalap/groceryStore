@@ -20,50 +20,38 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 
 export default function LoginPage() {
 
     const router = useRouter()
     const { toast } = useToast()
 
-    const [isSubmitting, setIsSubmitting] = useState(false)
-
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: '',
+            identifier: '',
             password: ''
         }
     })
 
     const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-        setIsSubmitting(true)
+        const result = await signIn('credentials', {
+            redirect: false,
+            identifier: data.identifier,
+            password: data.password
+        })
 
-        try {
-            const response = await axios.post('/api/login', data)
-
+        if (result?.error) {
             toast({
-                title: "loggedin successfully",
-                description: response.data.message
+                title: 'Error',
+                description: "Incorrect Credentials",
+                variant: 'destructive'
             })
-            router.push("/home")
-        } catch (error) {
-            console.log("Error while login", error)
+        }
 
-            let axiosError = error as AxiosError<ApiResponse>
-
-            let errorMessage = axiosError.response?.data.message ||
-                ('There was a problem with your login. Please try again.');
-
-            toast({
-                title: 'Login Failed',
-                description: errorMessage,
-                variant: 'destructive',
-            });
-
-
-        } finally {
-            setIsSubmitting(false)
+        if (result?.url) {
+            router.replace('/home')
         }
     }
 
@@ -75,7 +63,7 @@ export default function LoginPage() {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 justify-between w-full flex flex-wrap">
                         <FormField
-                            name="email"
+                            name="identifier"
                             control={form.control}
                             render={({ field, fieldState: { error } }) => (
                                 <FormItem className="w-full">
@@ -105,14 +93,8 @@ export default function LoginPage() {
                                 </FormItem>
                             )}
                         />
-                        <Button className="w-full" type="submit">{isSubmitting ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Please wait
-                            </>
-                        ) : (
-                            'Login'
-                        )}
+                        <Button className="w-full" type="submit">
+                            Login
                         </Button>
                     </form>
                     <div className="text-center mt-4">

@@ -1,9 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+export { default } from "next-auth/middleware"
 
 export async function middleware(request: NextRequest) {
     console.log("middleware running")
     try {
-        const token = request.cookies.get('token')?.name || false
+        const token = await getToken({ req: request })
         const url = request.nextUrl;
 
         console.log(token)
