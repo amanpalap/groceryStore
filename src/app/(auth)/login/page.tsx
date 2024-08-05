@@ -3,11 +3,10 @@ import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import * as z from 'zod'
-import { ApiResponse } from '@/types/ApiResponse'
 import { loginSchema } from '@/schemas/loginSchemas'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios, { AxiosError } from 'axios'
+
 import {
     Form,
     FormControl,
@@ -46,15 +45,17 @@ export default function LoginPage() {
         })
 
         if (result?.error) {
+            setIsSubmitting(false)
             toast({
                 title: 'Error',
                 description: "Incorrect Credentials",
                 variant: 'destructive'
             })
         }
-        setIsSubmitting(false)
+
 
         if (result?.url) {
+            setIsSubmitting(false)
             router.replace('/home')
         }
     }

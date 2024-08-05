@@ -14,6 +14,7 @@ import { useToast } from "./ui/use-toast";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 
 export function SidebarDemo() {
@@ -97,7 +98,7 @@ export function SidebarDemo() {
                             <span className="flex">
                                 <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                             </span>
-                            <div onClick={handleLogout} className="text-sm hover:translate-x-1 animation-tanslate duration-150" >
+                            <div onClick={() => signOut()} className="text-sm hover:translate-x-1 animation-tanslate duration-150" >
                                 {isSubmitting ? (
                                     <div className="w-full flex">
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

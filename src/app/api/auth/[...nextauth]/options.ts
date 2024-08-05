@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
                     if (!isPasswordCorrect) {
                         throw new Error('Password is incorrect')
                     } else {
+                        console.log(user)
                         return user
                     }
                 } catch (error: any) {
@@ -55,13 +56,11 @@ export const authOptions: NextAuthOptions = {
             return token
         }
     },
-
     pages: {
         signIn: '/login',
     },
     session: {
         strategy: 'jwt',
     },
-    secret: process.env.NEXTAUTH_SECRET
-
+    secret: process.env.TOKEN_SECRET
 }
