@@ -27,6 +27,8 @@ export default function LoginPage() {
     const router = useRouter()
     const { toast } = useToast()
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -36,6 +38,7 @@ export default function LoginPage() {
     })
 
     const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+        setIsSubmitting(true)
         const result = await signIn('credentials', {
             redirect: false,
             identifier: data.identifier,
@@ -49,6 +52,7 @@ export default function LoginPage() {
                 variant: 'destructive'
             })
         }
+        setIsSubmitting(false)
 
         if (result?.url) {
             router.replace('/home')
@@ -93,8 +97,14 @@ export default function LoginPage() {
                                 </FormItem>
                             )}
                         />
-                        <Button className="w-full" type="submit">
-                            Login
+                        <Button className="w-full" type="submit">{isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Please wait
+                            </>
+                        ) : (
+                            'Login'
+                        )}
                         </Button>
                     </form>
                     <div className="text-center mt-4">
