@@ -1,35 +1,25 @@
+import dbConnect from '@/lib/dbConnect';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/options";
+import userModel from '@/models/user';
 
-import { getDecodedToken } from "@/helpers/getDecodedToken";
-import dbConnect from "@/lib/dbConnect";
-import userModel from "@/models/user";
-import { NextResponse, NextRequest } from "next/server";
-
-
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, response: NextResponse) {
     await dbConnect();
 
     try {
-        const token = request.cookies.get("token")?.value;
+        const session = await getServerSession(authOptions);
 
-        if (!token) {
+        if (session) { console.log(session?.user) }
+
+        if (!session) {
             return NextResponse.json({
                 success: false,
                 message: "No token found",
             }, { status: 401 });
         }
 
-        const decodedData = getDecodedToken(token);
-
-        if (!decodedData) {
-            return NextResponse.json({
-                success: false,
-                message: "Invalid token",
-            }, { status: 401 });
-        }
-
-        console.log("Decoded Data:", decodedData);
-
-        const user = await userModel.findById(decodedData.id);
+        const user = await userModel.findById(session.user._id);
 
         if (!user) {
             return NextResponse.json({
@@ -38,18 +28,17 @@ export async function GET(request: NextRequest) {
             }, { status: 404 });
         }
 
-        // Return user data in the response
         return NextResponse.json({
             success: true,
             data: user,
         }, { status: 200 });
 
     } catch (error) {
-        console.log("failed to get User Profile", error);
+        console.error("Failed to get User Profile:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: "failed to get User Profile",
+                message: "Failed to get User Profile",
             },
             { status: 500 }
         );

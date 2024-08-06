@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
     IconBrandTabler,
@@ -11,18 +12,17 @@ import Image from "next/image";
 import { Loader2, LogIn, LogOut, ShoppingCart } from "lucide-react";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
 import { useToast } from "./ui/use-toast";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, HttpStatusCode } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { set } from "mongoose";
 
 
 export function SidebarDemo() {
-
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const { toast } = useToast()
-    const router = useRouter()
-
+    const { data: session } = useSession()
+    const link = 123456
+    const [getSession, setGetSession] = useState(false)
     const items = useAppSelector((state) => state.cart)
     const links = [
         {
@@ -38,6 +38,7 @@ export function SidebarDemo() {
             icon: (
                 <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
             ),
+
         },
         {
             label: "Login",
@@ -56,33 +57,14 @@ export function SidebarDemo() {
         },
     ];
 
-
-    const handleLogout = async () => {
-        setIsSubmitting(true)
-        try {
-            const response = await axios.get('/api/logout')
-            toast({
-                title: 'success',
-                description: 'Logged out Successfully'
-            })
-            router.push('/login')
-            console.log("pushing to logout")
-        } catch (error) {
-            console.error('Error during sign-up:', error); // eslint-disable-line no-console
-
-            const axiosError = error as AxiosError<ApiResponse>;
-
-            let errorMessage = axiosError.response?.data.message ||
-                ('There was a while logging Out. Please try again.');
-            toast({
-                title: 'Logout Failed',
-                description: errorMessage,
-                variant: 'destructive',
-            });
-        } finally {
-            setIsSubmitting(false)
+    useEffect(() => {
+        if (session) {
+            setGetSession(true)
+        } else {
+            setGetSession(false)
         }
-    }
+    }, [session])
+
     const [open, setOpen] = useState(false);
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -92,23 +74,14 @@ export function SidebarDemo() {
                     <div className="mt-8 flex flex-col gap-2">
 
                         {links.map((link, idx) => (
-                            <SidebarLink key={idx} link={link} />
+                            <SidebarLink key={idx} link={link || ""} />
                         ))}
                         <div className="mt-3 flex space-x-6">
                             <span className="flex">
                                 <LogOut className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                             </span>
                             <div onClick={() => signOut()} className="text-sm hover:translate-x-1 animation-tanslate duration-150" >
-                                {isSubmitting ? (
-                                    <div className="w-full flex">
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Please wait
-                                    </div>
-                                ) : (
-                                    <span className="cursor-pointer">
-                                        LogOut
-                                    </span>
-                                )}
+                                LogOut
                             </div>
                         </div>
 

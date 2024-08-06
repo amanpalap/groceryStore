@@ -1,5 +1,7 @@
 'use client'
 import { userUpdateSchemas } from "@/schemas/userUpdateSchemas"
+import { useSession } from "next-auth/react";
+
 
 import {
     Form,
@@ -23,6 +25,15 @@ import { UserData } from "@/types/UserData"
 
 
 const page = () => {
+    const { data: session } = useSession();
+    if (session) {
+        console.log(session.user)
+        // Access the token
+        // const token = session.accessToken; // or session.idToken depending on your provider
+        // console.log("Decoded Token:", token);
+    }
+
+
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [data, setData] = useState<UserData | null>(null)
@@ -80,6 +91,7 @@ const page = () => {
             try {
                 const response = await axios.get('/api/profile')
                 const data = response.data.data
+                console.log("Data:", data)
                 setData(data)
                 reset(data)
             } catch (error) {

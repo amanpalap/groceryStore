@@ -1,21 +1,14 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { NextURL } from 'next/dist/server/web/next-url';
 export { default } from "next-auth/middleware"
 
 export async function middleware(request: NextRequest) {
     console.log("middleware running")
     try {
         const cookies = request.cookies;
-        console.log('Cookies:', cookies);
-
-        const token = cookies.get('next-auth.session-token') || cookies.get('next-auth.csrf-token');
-        console.log('Extracted Token:', token);
+        const token = cookies.get('next-auth.session-token')
+        // console.log('Extracted Token:', token);
 
         const url = request.nextUrl
-
-
-        console.log(await getToken({ req: request }))
 
         // Redirect logged-in users trying to access login, sign-up, or verify pages to /home
         if (token && (url.pathname.startsWith('/login') || url.pathname.startsWith('/sign-up') || url.pathname.startsWith('/verify'))) {

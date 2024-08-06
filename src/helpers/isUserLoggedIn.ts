@@ -1,7 +1,9 @@
-import { NextRequest } from "next/server";
+// utils/auth.ts
+import { getSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
 
-export function isUserLoggedIn(request: NextRequest) {
-    const token = request.cookies?.get('token')
-    if (!token) return false
-    return true
-}
+export const isAuthenticated = async (context: GetServerSidePropsContext): Promise<boolean> => {
+    const session = await getSession(context);
+    console.log(session)
+    return !!session; // returns true if session exists, false otherwise
+};
