@@ -1,37 +1,28 @@
-import { getDecodedToken } from "@/helpers/getDecodedToken";
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/models/user";
+import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 
 export async function PUT(request: NextRequest) {
     await dbConnect();
 
     try {
-        const token = request.cookies.get("token")?.value;
+        const session = await getServerSession(authOptions);
 
-        if (!token) {
+        if (session) { console.log(session?.user) }
+
+        if (!session) {
             return NextResponse.json({
                 success: false,
                 message: "No token found",
             }, { status: 401 });
         }
 
-        const decodedData = getDecodedToken(token);
-
-        if (!decodedData) {
-            return NextResponse.json({
-                success: false,
-                message: "Invalid token",
-            }, { status: 401 });
-        }
-
-        console.log("Decoded Data");
-
         const { address, number } = await request.json()
 
         const user = await userModel.findOne({ number })
-        console.log("Decoded Data");
 
         if (user) {
             console.log("Decoded Data");
@@ -42,9 +33,8 @@ export async function PUT(request: NextRequest) {
             }, { status: 400 })
         }
 
-        console.log("Decoded Data");
 
-        const existingUser = await userModel.findOne({ _id: decodedData.id })
+        const existingUser = await userModel.findOne({ _id: session.user._id })
 
         if (!existingUser) {
             return NextResponse.json({
