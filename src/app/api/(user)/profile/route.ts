@@ -28,6 +28,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
             }, { status: 404 });
         }
 
+
+
         return NextResponse.json({
             success: true,
             data: user,

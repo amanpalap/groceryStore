@@ -6,6 +6,7 @@ interface Product {
     price: string;
     image: string;
     category: string;
+    amount: number
 }
 
 const initialState: Product[] = [];
@@ -20,9 +21,16 @@ const cartSlice = createSlice({
         remove: (state, action: PayloadAction<number>) => {
             return state.filter(product => product.id !== action.payload);
         },
+        setAmount: (state, action: PayloadAction<{ id: number, amount: number }>) => {
+            state.forEach(product => {
+                if (product.id === action.payload.id) {
+                    product.amount = action.payload.amount;
+                }
+            });
+        }
         // other reducers can be added here
     },
 });
 
-export const { add, remove } = cartSlice.actions;
+export const { add, remove, setAmount } = cartSlice.actions;
 export default cartSlice.reducer;
