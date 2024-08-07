@@ -1,10 +1,10 @@
 import dbConnect from "@/lib/dbConnect";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import userModel from "@/models/user";
 
-export async function POST(response: NextResponse) {
+export async function POST(request: NextRequest, response: NextResponse) {
     await dbConnect()
     try {
         const session = await getServerSession(authOptions)
@@ -21,11 +21,15 @@ export async function POST(response: NextResponse) {
         if (!user) {
             return NextResponse.json({
                 success: false,
-                message: "User not found",
+                message: "failed to get user",
             }, { status: 404 });
         }
 
     } catch (error) {
-
+        console.log("error getting Cart", error)
+        return NextResponse.json({
+            success: false,
+            message: "failed to Update Cart",
+        }, { status: 404 });
     }
 }
