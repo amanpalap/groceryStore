@@ -11,6 +11,8 @@ interface Links {
     icon: React.JSX.Element | React.ReactNode;
 }
 
+
+
 interface SidebarContextProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -149,38 +151,3 @@ export const MobileSidebar = ({
     );
 };
 
-export const SidebarLink = ({
-    link,
-    className,
-    ...props
-}: {
-    link: Links;
-    className?: string;
-    props?: LinkProps;
-}) => {
-
-    const { open, animate, setOpen } = useSidebar();
-    return (
-        <Link
-            href={link.href}
-            className={cn(
-                "flex items-center w-full justify-start gap-2 gap-x-6 group/sidebar py-2",
-                className
-            )}
-            {...props}
-            onClick={() => setOpen(!open)}
-        >
-            {link.icon}
-
-            <motion.span
-                animate={{
-                    display: animate ? (open ? "inline-block" : "none") : "inline-block",
-                    opacity: animate ? (open ? 1 : 0) : 1,
-                }}
-                className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
-            >
-                {link.label}
-            </motion.span>
-        </Link>
-    );
-};

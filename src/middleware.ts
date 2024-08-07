@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
     try {
         const cookies = request.cookies;
         const token = cookies.get('next-auth.session-token')
-        // console.log('Extracted Token:', token);
+        console.log('Extracted Token:', token);
 
         const url = request.nextUrl
 
