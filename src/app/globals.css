@@ -59,6 +59,18 @@
   }
 }
 
+.input-no-spinner {
+  appearance: none; /* Standard property for compatibility */
+  -webkit-appearance: none; /* For Chrome, Safari, Edge, Opera */
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+.input-no-spinner::-webkit-outer-spin-button,
+.input-no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 @layer base {
   * {
     @apply border-border;

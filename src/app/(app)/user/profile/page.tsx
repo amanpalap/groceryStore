@@ -26,13 +26,6 @@ import { UserData } from "@/types/UserData"
 
 const page = () => {
     const { data: session } = useSession();
-    if (session) {
-        console.log(session.user)
-        // Access the token
-        // const token = session.accessToken; // or session.idToken depending on your provider
-        // console.log("Decoded Token:", token);
-    }
-
 
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false);
