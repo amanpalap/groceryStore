@@ -50,7 +50,7 @@ export function SidebarDemo() {
                                 <Link href={"/user/cart"} className="w-full flex flex-grow gap-x-4">
                                     <span className="flex">
                                         <ShoppingCart className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-                                        {item.length > 0 && <span className="bg-red-500 absolute justify-center text-center rounded-full text-xs p-1.5 h-4 w-4 overflow-hidden font-bold translate-x-3 translate-y-3 flex items-center m-0">
+                                        {item && item.length > 0 && <span className="bg-red-500 absolute justify-center text-center rounded-full text-xs p-1.5 h-4 w-4 overflow-hidden font-bold translate-x-3 translate-y-3 flex items-center m-0">
                                             {item.length}</span>}
                                     </span>
                                     <div className="text-sm hover:translate-x-1 animation-tanslate duration-150 cursor-pointer" >
