@@ -31,7 +31,7 @@ export default function ProductCard() {
         { id: 14, names: ["Cauliflower", "फूलगोभी"], price: "160/kg", image: "/cauliflower.jpeg", category: "Vegetables", amount: 0 },
         { id: 30, names: ["Chenopodium", "बथुआ"], price: "160/kg", image: "/chenopodium.jpg", category: "Vegetables", amount: 0 },
         { id: 11, names: ["Chili", "मिर्च"], price: "80/kg", image: "/chili.jpeg", category: "Vegetables", amount: 0 },
-        { id: 35, names: ["Chili Moti", "मोटी मिर्च"], price: "80/kg", image: "/chili_moti1.jpeg", category: "Vegetables", amount: 0 },
+        { id: 50, names: ["Chili Moti", "मोटी मिर्च"], price: "80/kg", image: "/chili_moti1.jpeg", category: "Vegetables", amount: 0 },
         { id: 35, names: ["Chili Moti", "मोटी मिर्च"], price: "80/kg", image: "/chili_moti.jpeg", category: "Vegetables", amount: 0 },
         { id: 33, names: ["Cluster Beans Variety", "ग्वार फली (प्रकार)"], price: "100/kg", image: "/cluster_beans_variety.jpeg", category: "Vegetables", amount: 0 },
         { id: 34, names: ["Cluster Beans Desi", "ग्वार फली (देशी)"], price: "80/kg", image: "/cluster_beans_desi.jpeg", category: "Vegetables", amount: 0 },
