@@ -60,7 +60,7 @@ const Page = () => {
                     <div className="w-full px-8 flex">
                         <Image className='' src={item.image} alt={''} width={"250"} height={"150"} />
 
-                        <div>
+                        <div className='flex flex-wrap'>
                             <h3 className='text-2xl h-fit border-2'>
                                 {item.names[0]} ({item.names[1]})
                             </h3>

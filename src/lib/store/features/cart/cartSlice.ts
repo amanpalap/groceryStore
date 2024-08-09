@@ -6,10 +6,17 @@ interface Product {
     price: string;
     image: string;
     category: string;
-    amount: number
+    amount: number;
 }
 
-const initialState: Product[] = JSON.parse(localStorage.getItem("cart") as string) || [];
+const getInitialState = (): Product[] => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+        return JSON.parse(localStorage.getItem("cart") as string);
+    }
+    return [];
+};
+
+const initialState: Product[] = getInitialState();
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -17,21 +24,20 @@ const cartSlice = createSlice({
     reducers: {
         add: (state, action: PayloadAction<Product>) => {
             state.push(action.payload);
-            let cartItems = JSON.stringify(current(state))
-            localStorage.setItem("cart", cartItems)
-
+            localStorage.setItem("cart", JSON.stringify(current(state)));
         },
         remove: (state, action: PayloadAction<number>) => {
-            return state.filter(product => product.id !== action.payload);
+            const updatedState = state.filter(product => product.id !== action.payload);
+            localStorage.setItem("cart", JSON.stringify(updatedState));
+            return updatedState;
         },
         setAmount: (state, action: PayloadAction<{ id: number, amount: number }>) => {
-            state.forEach(product => {
-                if (product.id === action.payload.id) {
-                    product.amount = action.payload.amount;
-                }
-            });
+            const updatedState = state.map(product =>
+                product.id === action.payload.id ? { ...product, amount: action.payload.amount } : product
+            );
+            localStorage.setItem("cart", JSON.stringify(updatedState));
+            return updatedState;
         }
-        // other reducers can be added here
     },
 });
 
