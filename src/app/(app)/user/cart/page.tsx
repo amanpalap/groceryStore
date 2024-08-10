@@ -45,84 +45,90 @@ const Page = () => {
 
     const amountIncrementor = (id: number, amount: number) => {
         if (amount < 0.5 && amount >= 0) {
-            amountHandler(id, amount + 0.1);
+            amountHandler(id, amount + 0.10);
         } else if (amount >= 0.5 && amount < 1) {
             amountHandler(id, amount + 0.25);
         } else if (amount >= 1 && amount < 10) {
-            amountHandler(id, amount + 0.5);
+            amountHandler(id, amount + 0.50);
         }
     };
 
     const amountDecrementor = (id: number, amount: number) => {
-        if (amount <= 0.5 && amount > 0) {
-            amountHandler(id, amount - 0.1);
+        if (amount <= 0.5 && amount > 0.1) {
+            amountHandler(id, amount - 0.10);
         } else if (amount > 0.5 && amount <= 1) {
             amountHandler(id, amount - 0.25);
         } else if (amount > 1) {
-            amountHandler(id, amount - 0.5);
+            amountHandler(id, amount - 0.50);
         }
     };
 
     return (
-        <div className='w-full grid p-8'>
+        <div className='w-full grid p-8 full'>
             <h1 className='w-full font-extrabold text-5xl mb-8'>Your Cart</h1>
-            {cartItems.map((item, idx) => (
-                <div key={item.id} className='flex w-[45%] flex-wrap border-2'>
-                    <div className="items-between border-2 space-x-10 flex">
-                        <Image src={item.image} className="rounded-l-xl w-52 h-32 aspect-square" alt={`${item.names[0]} image`} width={"100"} height={"100"} />
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-8'>
+                {cartItems.map((item, idx) => (
+                    <div key={item.id} className='grid w-full bg-slate-800 rounded-3xl overflow-hidden my-4 '>
+                        <div className="items-between justify-evenly w-full space-x-5 flex">
+                            <div className='w-[40%]'>
+                                <Image src={item.image} className="object-center w-full h-40" alt={`${item.names[0]} image`} width={"1000"} height={"1000"} />
+                            </div>
+                            <div className='flex w-[60%] flex-wrap py-2'>
+                                <h3 className='text-2xl h-fit'>
+                                    {item.names[0]}
+                                </h3>
 
-                        <div className='flex flex-wrap'>
-                            <h3 className='text-2xl h-fit'>
-                                {item.names[0]} ({item.names[1]})
-                            </h3>
-
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between w-full border-2 flex flex-wrap">
-                                    <FormField
-                                        name="weight"
-                                        control={form.control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <FormItem className='flex flex-wrap h-fit'>
-                                                <FormLabel>Weight</FormLabel>
-                                                <FormControl className='w-full'>
-                                                    <div className='flex justify-between items-center'>
-                                                        <Input
-                                                            className='w-20 input-no-spinner'
-                                                            {...field}
-                                                            type="number"
-                                                            value={item.amount.toFixed(2) || ""}
-                                                            placeholder='0'
-                                                            onChange={(e) => amountHandler(item.id, Number(e.target.value))}
-                                                        />
-                                                        <span>/kg</span>
-                                                        <div className='border-2 flex w-10 rounded-lg overflow-hidden flex-wrap'>
-                                                            <ArrowUp type="button"
-                                                                onClick={() => amountIncrementor(item.id, item.amount)}
-                                                                className='bg-white text-black flex jsutify-center items-center h-5 w-full' />
-                                                            <ArrowDown type="button"
-                                                                onClick={() => amountDecrementor(item.id, item.amount)}
-                                                                className='bg-white text-black flex jsutify-center items-center h-5 w-full' />
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between w-full flex flex-wrap">
+                                        <FormField
+                                            name="weight"
+                                            control={form.control}
+                                            render={({ field, fieldState: { error } }) => (
+                                                <FormItem className='flex flex-wrap h-fit w-full'>
+                                                    <FormLabel className='ml-2'>Weight</FormLabel>
+                                                    <FormControl className='w-full'>
+                                                        <div className='flex items-center w-full px-2'>
+                                                            <div className='flex w-[30%]'>
+                                                                <Input
+                                                                    className='w-[70%] input-no-spinner '
+                                                                    {...field}
+                                                                    type="number"
+                                                                    value={item.amount.toFixed(2) || ""}
+                                                                    placeholder='0'
+                                                                    onChange={(e) => amountHandler(item.id, Number(e.target.value))}
+                                                                />
+                                                                <span className='font-serif font-bold'>/kg
+                                                                </span>
+                                                            </div>
+                                                            <div className='flex ml-2 w-[20%] rounded-lg overflow-hidden flex-wrap'>
+                                                                <ArrowUp strokeWidth={4} type="button"
+                                                                    onClick={() => amountIncrementor(item.id, item.amount)}
+                                                                    className='bg-white text-black p-1 flex jsutify-center items-center w-1/2' />
+                                                                <ArrowDown strokeWidth={4} type="button"
+                                                                    onClick={() => amountDecrementor(item.id, item.amount)}
+                                                                    className='bg-white p-1 text-black flex jsutify-center items-center w-1/2' />
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </FormControl>
-                                                {error?.message && <FormMessage className="text-xs">{error.message}</FormMessage>}
-                                            </FormItem>
-                                        )}
-                                    />
-                                </form>
-                            </Form>
+                                                    </FormControl>
+                                                    {error?.message && <FormMessage className="text-xs">{error.message}</FormMessage>}
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </form>
+                                </Form>
 
-                            <button
-                                type="button"
-                                className="bg-red-500 px-5 rounded-xl hover:text-black"
-                                onClick={() => handleRemove(item.id)}
-                            >
-                                Remove
-                            </button>
+                                <button
+                                    type="button"
+                                    className="bg-red-500 px-5 rounded-xl hover:text-black"
+                                    onClick={() => handleRemove(item.id)}
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }

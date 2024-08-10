@@ -85,7 +85,7 @@ export default function ProductCard() {
                 <div className='flex w-full pl-3 justify-between items-center'>
                     <p className='flex items-center'><IndianRupee size={16} />{item.price}</p>
                     <button
-                        className='bg-green-500 rounded-tl-3xl px-6 lg:px-8 justify-between py-2 flex'
+                        className='bg-green-500 active:scale-50 transition transform duration-300 rounded-tl-3xl px-6 lg:px-8 justify-between py-2 flex'
                         onClick={() => handleAddToCart(item)}
                     >
                         <ShoppingCart />
