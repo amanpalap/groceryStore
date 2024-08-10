@@ -47,6 +47,8 @@ export const authOptions: NextAuthOptions = {
                 session.user.isVerified = token.isVerified
                 session.user.fullName = token.fullName
                 session.user.email = token.email
+                session.user.address = token.address
+                session.user.number = token.number
             }
             return session
         },
@@ -56,7 +58,8 @@ export const authOptions: NextAuthOptions = {
                 token.isVerified = user.isVerified
                 token.fullName = (user.firstName + " " + user.lastName).toString()
                 token.email = user.email
-                console.log('Token created:', token); // Log token data for debugging
+                token.address = user.address
+                token.number = user.number
             }
             return token
         }

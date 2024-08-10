@@ -1,27 +1,18 @@
 'use client'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { remove, setAmount } from '@/lib/store/features/cart/cartSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks/hooks';
-import { useForm } from 'react-hook-form';
-import { cartSchema } from '@/schemas/cartSchemas';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import Link from 'next/link';
+import { Label } from '@radix-ui/react-label';
+
 
 const Page = () => {
     const cartItems = useAppSelector((state) => state.cart);
     const dispatch = useAppDispatch();
     const [isMounted, setIsMounted] = useState(false);
-
-    const form = useForm<z.infer<typeof cartSchema>>({
-        resolver: zodResolver(cartSchema),
-        defaultValues: {
-            weight: 0,
-        },
-    });
 
     useEffect(() => {
         setIsMounted(true);
@@ -30,10 +21,6 @@ const Page = () => {
     if (!isMounted) {
         return null;
     }
-
-    const onSubmit = () => {
-        // Handle form submission
-    };
 
     const amountHandler = (id: number, amount: number) => {
         dispatch(setAmount({ id, amount }));
@@ -74,48 +61,34 @@ const Page = () => {
                                 <Image src={item.image} className="object-center w-full h-40" alt={`${item.names[0]} image`} width={"1000"} height={"1000"} />
                             </div>
                             <div className='flex w-[60%] flex-wrap py-2'>
-                                <h3 className='text-2xl h-fit'>
+                                <h3 className='text-2xl h-fit w-full'>
                                     {item.names[0]}
                                 </h3>
 
-                                <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between w-full flex flex-wrap">
-                                        <FormField
-                                            name="weight"
-                                            control={form.control}
-                                            render={({ field, fieldState: { error } }) => (
-                                                <FormItem className='flex flex-wrap h-fit w-full'>
-                                                    <FormLabel className='ml-2'>Weight</FormLabel>
-                                                    <FormControl className='w-full'>
-                                                        <div className='flex items-center w-full px-2'>
-                                                            <div className='flex w-[30%]'>
-                                                                <Input
-                                                                    className='w-[70%] input-no-spinner '
-                                                                    {...field}
-                                                                    type="number"
-                                                                    value={item.amount.toFixed(2) || ""}
-                                                                    placeholder='0'
-                                                                    onChange={(e) => amountHandler(item.id, Number(e.target.value))}
-                                                                />
-                                                                <span className='font-serif font-bold'>/kg
-                                                                </span>
-                                                            </div>
-                                                            <div className='flex ml-2 w-[20%] rounded-lg overflow-hidden flex-wrap'>
-                                                                <ArrowUp strokeWidth={4} type="button"
-                                                                    onClick={() => amountIncrementor(item.id, item.amount)}
-                                                                    className='bg-white text-black p-1 flex jsutify-center items-center w-1/2' />
-                                                                <ArrowDown strokeWidth={4} type="button"
-                                                                    onClick={() => amountDecrementor(item.id, item.amount)}
-                                                                    className='bg-white p-1 text-black flex jsutify-center items-center w-1/2' />
-                                                            </div>
-                                                        </div>
-                                                    </FormControl>
-                                                    {error?.message && <FormMessage className="text-xs">{error.message}</FormMessage>}
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </form>
-                                </Form>
+                                <div>
+                                    <Label className='ml-2'>Weight</Label>
+                                    <div className='flex items-center w-full px-2'>
+                                        <div className='flex w-[30%] items-center'>
+                                            <Input
+                                                className='w-[70%] input-no-spinner'
+                                                type="number"
+                                                value={item.amount.toFixed(2) || ""}
+                                                placeholder='0'
+                                                onChange={(e) => amountHandler(item.id, Number(e.target.value))}
+                                            />
+                                            <span className='font-serif font-bold text-center'>/kg
+                                            </span>
+                                        </div>
+                                        <div className='flex ml-2 w-[20%] rounded-lg overflow-hidden flex-wrap'>
+                                            <ArrowUp strokeWidth={4} type="button"
+                                                onClick={() => amountIncrementor(item.id, item.amount)}
+                                                className='bg-white text-black p-1 flex jsutify-center items-center w-1/2' />
+                                            <ArrowDown strokeWidth={4} type="button"
+                                                onClick={() => amountDecrementor(item.id, item.amount)}
+                                                className='bg-white p-1 text-black flex jsutify-center items-center w-1/2' />
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <button
                                     type="button"
@@ -128,7 +101,21 @@ const Page = () => {
                         </div>
                     </div>
                 ))}
+
             </div>
+            {cartItems.length > 0 ? (
+                <Link
+                    className="w-full mt-4 text-center bg-white rounded-xl py-4 font-mono font-extrabold text-2xl text-black"
+                    type="submit"
+                    href={'/user/placeorder'}
+                >
+                    CheckOut
+                </Link>
+            ) : (
+                <p className="w-full mt-4 text-center bg-gray-200 rounded-xl py-4 font-mono font-extrabold text-2xl text-gray-500">
+                    Your cart is empty
+                </p>
+            )}
         </div>
     );
 }
