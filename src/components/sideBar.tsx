@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { LogIn, LogOut, ShoppingCart, House, UserPlus, UserPen } from "lucide-react";
+import { LogIn, LogOut, ShoppingCart, House, UserPlus, UserPen, CircleAlert } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks/hooks'
 import { add } from "@/lib/store/features/cart/cartSlice";
@@ -89,7 +89,14 @@ export function SidebarDemo() {
                             </div>
                             )
                         }
-
+                        <Link href={"/about"} className="w-full flex flex-grow space-x-4">
+                            <span className="flex">
+                                <CircleAlert className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0 rotate-180" />
+                            </span>
+                            <div className="text-sm inline-block h-5 overflow-hidden hover:translate-x-1 animation-tanslate duration-150 cursor-pointer" >
+                                About
+                            </div>
+                        </Link>
                     </div>
                 </div>
 

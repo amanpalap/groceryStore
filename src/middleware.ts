@@ -40,8 +40,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
     // Use a more specific matcher to avoid potential ReDoS vulnerabilities
     matcher: [
-        '/user/profile',
-        '/user/cart',
+        '/user/:path*',
         '/login',
         '/sign-up',
         '/verify',

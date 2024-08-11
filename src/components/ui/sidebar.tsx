@@ -4,6 +4,7 @@ import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2 } from "@tabler/icons-react";
+import { X } from "lucide-react";
 
 interface Links {
     label: string;
@@ -142,9 +143,16 @@ export const MobileSidebar = ({
                                 className
                             )}
                         >
+                            <div
+                                className="absolute right-5 top-5 z-50 text-neutral-800 dark:text-neutral-200"
+                                onClick={() => setOpen(!open)}
+                            >
+                                <X strokeWidth={3} className="rounded-full p-0.5 bg-white text-black w-5 h-5" />
+                            </div>
                             {children}
                         </motion.div>
                     )}
+
                 </AnimatePresence>
             </div>
         </>
