@@ -52,7 +52,7 @@ const Page = () => {
 
     return (
         <div className='w-full grid p-8 full'>
-            <h1 className='w-full font-extrabold text-5xl mb-8'>Your Cart</h1>
+            <h1 className='w-full font-extrabold text-5xl mb-8 text-center'>Your Cart</h1>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-8'>
                 {cartItems.map((item, idx) => (
                     <div key={item.id} className='grid w-full bg-slate-800 rounded-3xl overflow-hidden my-4 '>
