@@ -27,6 +27,8 @@
     "framer-motion": "^11.3.19",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.416.0",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",

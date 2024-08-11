@@ -2,29 +2,84 @@
 import { useAppSelector } from '@/lib/store/hooks/hooks';
 import { useEffect, useState } from 'react';
 import { useSession } from "next-auth/react";
-import { Equal, X } from 'lucide-react';
-
+import { Equal, Loader2, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import jsPDF from 'jspdf'; // Importing jsPDF directly
+import 'jspdf-autotable'; // Import the autoTable plugin
 
 const Page = () => {
     const cartItems = useAppSelector((state) => state.cart);
     const [isMounted, setIsMounted] = useState(false);
     const { data: session } = useSession();
     const [total, setTotal] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
-    const handleSubmit = () => {
-        //setup handle submit
-    }
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        const doc = new jsPDF();
+
+        // Add title and user information
+        doc.setFontSize(20);
+        doc.text('Order Summary', 14, 22);
+        doc.setFontSize(12);
+        doc.text(`Customer: ${session?.user?.name || 'N/A'}`, 14, 32);
+        doc.text(`Address: ${session?.user?.address || 'N/A'}`, 14, 42);
+        doc.text(`Phone Number: ${session?.user?.number || 'N/A'}`, 14, 52);
+
+        // Table setup
+        const tableData = cartItems.map((item, idx) => [
+            idx + 1,
+            item.names[0],
+            `₹${item.price}`,
+            item.amount,
+            `₹${(Number(item.price) * item.amount).toFixed(2)}`
+        ]);
+
+        (doc as any).autoTable({
+            head: [['#', 'Name', 'Price/kg', 'Weight(kg)', 'Cost']],
+            body: tableData,
+            startY: 60,
+            theme: 'grid',
+            headStyles: { fillColor: [44, 62, 80] },
+            bodyStyles: { fillColor: [245, 245, 245] },
+            columnStyles: {
+                0: { cellWidth: 10 }, // S. No. column
+                1: { cellWidth: 50 }, // Name column
+                2: { cellWidth: 30, halign: 'right' }, // Price/kg column
+                3: { cellWidth: 30, halign: 'right' }, // Weight(kg) column
+                4: { cellWidth: 30, halign: 'right' }, // Cost column
+            },
+            styles: { fontSize: 10, font: "courier" },
+        });
+
+        // Total
+        doc.setFontSize(14);
+        doc.text(`Total: ₹${total.toFixed(2)}`, 14, (doc as any).lastAutoTable.finalY + 10);
+
+        // Disclaimer
+        doc.setFontSize(10);
+        doc.text('Disclaimer:', 14, (doc as any).lastAutoTable.finalY + 20);
+        doc.setFontSize(8);
+
+        // Save the PDF with a specific file name
+        doc.save('order_summary.pdf');
+
+        setIsSubmitting(false);
+    };
 
     useEffect(() => {
         const calculatedTotal = cartItems.reduce((acc, item) => acc + (Number(item.price) * item.amount), 0);
         if (calculatedTotal < 250) {
-            setTotal(calculatedTotal + 50)
+            setTotal(calculatedTotal + 50);
         } else {
-            setTotal(calculatedTotal)
+            setTotal(calculatedTotal);
         }
     }, [cartItems]);
 
@@ -47,41 +102,83 @@ const Page = () => {
                 }
             </div>
 
-            <div className='grid grid-cols-1 bg-slate-800 rounded-xl my-4 p-4'>
-                <div className='w-full flex justify-between text-red-200 font-bold font-sans text-md mb-2'>
-                    <span className='text-red-200 font-black lg:w-[25%] w-[30%] ml-14'>Name</span>
-                    <div className='flex lg:justify-end w-[50%] lg:w-[50%] justify-between'>
-                        <span className='lg:w-[15%]'>Price/kg</span>
-                        <span className='lg:w-[20%]'>Weight(kg)</span>
-                        <span className='lg:w-[7%]'>Cost</span>
+            <div className='grid grid-cols-1 z-20 bg-slate-800 rounded-xl my-4 p-4'>
+                {/* Heading Row */}
+                <div className='flex items-center text-red-200 justify-between font-bold mb-4'>
+                    <div className='lg:w-[50%] w-[30%] pl-6 lg:pl-0'>Name</div>
+                    <div className='lg:w-[50%] w-[60%] flex flex-wrap justify-between'>
+                        <div className='lg:w-1/3'>Price/kg</div>
+                        <div className='lg:w-1/3 text-center '>Weight(kg)</div>
+                        <div className='lg:w-1/3  text-right pr-2 '>Cost</div>
                     </div>
                 </div>
-                {cartItems.map((item, idx) => (
-                    <div key={item.id} className='grid w-full'>
-                        <div className='flex items-center justify-between flex-wrap py-2 w-full'>
-                            <div className='lg:w-[25%] w-[50%]'>
-                                <span className='px-4 font-serif font-extrabold w-[4%]'>{idx + 1}.</span>
-                                <span className='px-3'>{item.names[0]}</span>
-                            </div>
 
-                            <div className='w-[50%] text-center flex justify-end'>
-                                <span className='lg:px-3 w-[30%] lg:w-[10%] justify-end flex'>{item.price}</span>
-                                <X strokeWidth={3} />
-                                <span className='lg:px-3 justify-end flex w-[25%] lg:w-[15%]'>{item.amount} kg</span>
-                                <Equal strokeWidth={3} />
-                                <span className='lg:px-3 lg:w-[15%] w-[30%] justify-end flex'>{(Number(item.price) * item.amount).toFixed(2)}</span>
+                <form onSubmit={onSubmit} className="justify-between w-full flex flex-wrap bg-transparent z-50">
+                    {cartItems.map((item, idx) => (
+                        <div key={item.id} className='grid w-full'>
+                            <div className='flex items-center -z-10 justify-between flex-wrap py-2 w-full'>
+                                <div className='flex items-center flex-wrap w-[40%] lg:w-[35%]'>
+                                    <span className='lg:w-[2%] w-[9%] text-xs'>{idx + 1}.</span>
+                                    <div className="lg:px-3 w-[85%] lg:w-[90%] justify-end focus: flex">
+                                        <Input
+                                            className='h-6 bg-slate-800'
+                                            name={`name-${idx}`}
+                                            value={item.names[0]}
+                                            readOnly
+                                        />
+                                    </div>
+                                </div>
+                                <div className='lg:w-[50%] w-[60%] flex flex-wrap justify-between  items-center'>
+                                    <div className="lg:px-3 w-[30%] lg:w-[15%] justify-end flex">
+                                        <Input
+                                            className='h-6 bg-slate-800'
+                                            name={`price-${idx}`}
+                                            value={item.price}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <X size={15} strokeWidth={3} />
+                                    <div className="lg:px-3 w-[15%] justify-end flex">
+                                        <Input
+                                            className='h-6 bg-slate-800'
+                                            name={`weight-${idx}`}
+                                            value={item.amount}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <Equal size={15} strokeWidth={3} />
+                                    <div className="lg:px-3 w-[30%] lg:w-[15%] justify-end flex">
+                                        <Input
+                                            className='h-6 disabled:opacity-100 text-right bg-slate-800'
+                                            name={`amount-${idx}`}
+                                            value={(Number(item.price) * item.amount).toFixed(2)}
+                                            readOnly
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-                <div className='justify-end flex font-bold font-sans lg:px-3 mt-4 text-red-500'>
-                    <span className=''>Total: <span className='pl-2'>₹ {total.toFixed(2)}</span></span>
-                </div>
+                    ))}
 
+                    <Button className="lg:w-[89%] w-[87%] fixed bottom-2 py-4 text-xl bg-white rounded-xl text-black font-bold font-mono" type="submit">
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Please wait
+                            </>
+                        ) : (
+                            `Place Order (₹${total.toFixed(2)})`
+                        )}
+                    </Button>
+                </form>
+
+                <div className='justify-end flex font-bold font-sans lg:px-3 mt-4 text-red-500'>
+                    <span>Total: <span className='pl-2'>₹ {total.toFixed(2)}</span></span>
+                </div>
             </div>
             <div className='w-full px-4 mb-4 flex justify-center flex-wrap'>
                 {(total - 50) < 250 && <h3 className='text-green-700 text-xl animate-pulse duration-550 bg-white w-1/2 text-center mb-3 rounded-xl'>Delivery is free above ₹250</h3>}
-                <div className='bg-yellow-100 text-yellow-700 p-4 rounded-lg w-full'>
+                <div className='bg-yellow-100 text-yellow-700 p-4 rounded-lg w-full mb-8'>
                     <h3 className='font-bold text-lg mb-2'>Disclaimer</h3>
                     <p className='text-sm'>
                         Please review your order carefully before proceeding. Prices are subject to change based on market conditions.
@@ -93,10 +190,6 @@ const Page = () => {
                     </p>
                 </div>
             </div>
-            <button className="w-full py-4 text-xl bg-white rounded-xl text-black font-bold font-mono" onSubmit={() => handleSubmit}>
-                Place Order (₹{total.toFixed(2)})
-            </button>
-            {console.log(cartItems)!}
         </div>
     );
 }
