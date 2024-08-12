@@ -4,8 +4,9 @@ import { authOptions } from "../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
 import OrdersModel from "@/models/cart";
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
     await dbConnect()
+    console.log("object")
     try {
         const session = await getServerSession(authOptions)
 
@@ -15,6 +16,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
                 message: "No session found",
             }, { status: 401 });
         }
+
+        console.log("object")
 
         const { customer, address, phoneNumber, cartItems, total } = await request.json();
 
@@ -26,6 +29,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
             total,
             orderDate: new Date(),
         });
+
+        console.log(newOrder)
 
         await newOrder.save();
 

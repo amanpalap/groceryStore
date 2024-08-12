@@ -1,11 +1,14 @@
 'use client'
-import { useAppSelector } from '@/lib/store/hooks/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks/hooks';
 import { useEffect, useState } from 'react';
 import { useSession } from "next-auth/react";
 import { Equal, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useToast } from '@/components/ui/use-toast';
+import { clear } from '@/lib/store/features/cart/cartSlice';
+import { useRouter } from 'next/router';
 
 interface CartItem {
     name: string;
@@ -23,12 +26,14 @@ interface FormData {
 }
 
 const Page = () => {
+    const dispatch = useAppDispatch()
     const cartItems = useAppSelector((state) => state.cart);
     const [isMounted, setIsMounted] = useState(false);
     const { data: session } = useSession();
     const [total, setTotal] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedData, setSubmittedData] = useState<FormData | null>(null); // State with FormData type
+    const { toast } = useToast()
 
     useEffect(() => {
         setIsMounted(true);
@@ -39,7 +44,7 @@ const Page = () => {
         setIsSubmitting(true);
 
         const formData = {
-            customer: session?.user?.name || 'N/A',
+            customer: session?.user?.fullName || 'N/A',
             address: session?.user?.address || 'N/A',
             phoneNumber: session?.user?.number || 'N/A',
             cartItems: cartItems.map(item => ({
@@ -52,31 +57,35 @@ const Page = () => {
         };
 
         setSubmittedData(formData);
+        console.log("1", formData)
 
         try {
-            const response = await axios.post('/api/place-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            const response = await axios.post('/api/cart', formData);
+            console.log("response:", response)
+            toast({
+                title: 'Order placed successfully',
+                description: "Your order has been successfully placed.",
             });
+            dispatch(clear())
+            router.replace()
+            console.log(formData);
 
-            const result = await response.json();
-
-            if (response.ok) {
-                console.log('Order placed successfully', result);
-            } else {
-                console.error('Failed to place order', result);
-            }
         } catch (error) {
-            console.error('Error placing order', error);
+            console.error("Error placing order", error);
+
+            const axiosError = error as AxiosError;
+            // const errorMessage = axiosError.response?.data.message ||
+            // 'There was a problem placing your order. Please try again.';
+
+            toast({
+                title: 'Order Placement Failed',
+                description: "faled to place order",
+                variant: 'destructive',
+            });
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setIsSubmitting(false);
     };
-
-    console.log(submittedData)
 
     useEffect(() => {
         const calculatedTotal = cartItems.reduce((acc, item) => acc + (Number(item.price) * item.amount), 0);
@@ -87,7 +96,6 @@ const Page = () => {
         }
     }, [cartItems]);
 
-    console.log(session)
 
     if (!isMounted) {
         return null;
@@ -197,24 +205,6 @@ const Page = () => {
                     </p>
                 </div>
             </div>
-
-            {submittedData && (
-                <div className='w-full mt-8 p-4 rounded-lg'>
-                    <h3 className='font-bold text-xl mb-4'>Submitted Data:</h3>
-                    <p><strong>Customer:</strong> {submittedData.customer}</p>
-                    <p><strong>Address:</strong> {submittedData.address}</p>
-                    <p><strong>Phone Number:</strong> {submittedData.phoneNumber}</p>
-                    <h4 className='font-bold mt-4'>Items:</h4>
-                    <ul className='list-disc pl-5'>
-                        {submittedData.cartItems.map((item, idx) => (
-                            <li key={idx}>
-                                {item.name} - {item.amount}kg @ ₹{item.price}/kg - Cost: ₹{item.cost}
-                            </li>
-                        ))}
-                    </ul>
-                    <p className='mt-4 font-bold'>Total: ₹{submittedData.total}</p>
-                </div>
-            )}
         </div>
     );
 }
