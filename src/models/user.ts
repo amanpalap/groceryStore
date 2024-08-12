@@ -34,6 +34,7 @@ export interface User extends Document {
     otp: string
     otpExpiry: Date
     isVerified: boolean
+    isAdmin: boolean
     buckets: bucket[]
 }
 
@@ -76,6 +77,10 @@ const UserSchema: Schema<User> = new mongoose.Schema({
         required: [true, 'OTP Expiry is required'],
     },
     isVerified: {
+        type: Boolean,
+        default: false
+    },
+    isAdmin: {
         type: Boolean,
         default: false
     },

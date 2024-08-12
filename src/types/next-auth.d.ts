@@ -7,6 +7,7 @@ declare module 'next-auth' {
         isVerified?: boolean
         email?: string
         firstName?: string
+        isAdmin?: boolean
         lastName?: string
         address?: string
         number?: string
@@ -16,6 +17,7 @@ declare module 'next-auth' {
             _id?: string
             isVerified?: boolean
             email?: string
+            isAdmin?: boolean
             fullName?: string
             address?: string
             number?: string
@@ -27,6 +29,7 @@ declare module 'next-auth/jwt' {
     interface JWT {
         _id?: string
         isVerified?: boolean
+        isAdmin?: boolean
         email?: string
         fullName?: string
         address?: string

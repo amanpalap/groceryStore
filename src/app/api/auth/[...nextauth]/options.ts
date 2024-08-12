@@ -49,6 +49,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.email = token.email
                 session.user.address = token.address
                 session.user.number = token.number
+                session.user.isAdmin = token.isAdmin
             }
             return session
         },
@@ -60,6 +61,7 @@ export const authOptions: NextAuthOptions = {
                 token.email = user.email
                 token.address = user.address
                 token.number = user.number
+                token.isAdmin = user.isAdmin
             }
             return token
         }

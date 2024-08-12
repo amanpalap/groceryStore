@@ -32,7 +32,7 @@ const Page = () => {
     const { data: session } = useSession();
     const [total, setTotal] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submittedData, setSubmittedData] = useState<FormData | null>(null); // State with FormData type
+    const [submittedData, setSubmittedData] = useState<FormData | null>(null);
     const { toast } = useToast()
 
     useEffect(() => {
