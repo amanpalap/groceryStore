@@ -5,8 +5,22 @@ import { useSession } from "next-auth/react";
 import { Equal, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import jsPDF from 'jspdf'; // Importing jsPDF directly
-import 'jspdf-autotable'; // Import the autoTable plugin
+import axios from 'axios';
+
+interface CartItem {
+    name: string;
+    price: string;
+    amount: number;
+    cost: string;
+}
+
+interface FormData {
+    customer: string;
+    address: string;
+    phoneNumber: string;
+    cartItems: CartItem[];
+    total: string;
+}
 
 const Page = () => {
     const cartItems = useAppSelector((state) => state.cart);
@@ -14,65 +28,55 @@ const Page = () => {
     const { data: session } = useSession();
     const [total, setTotal] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submittedData, setSubmittedData] = useState<FormData | null>(null); // State with FormData type
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
-    const onSubmit = async (event) => {
+    const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsSubmitting(true);
 
-        const doc = new jsPDF();
+        const formData = {
+            customer: session?.user?.name || 'N/A',
+            address: session?.user?.address || 'N/A',
+            phoneNumber: session?.user?.number || 'N/A',
+            cartItems: cartItems.map(item => ({
+                name: item.names[0],
+                price: `₹${item.price}`,
+                amount: item.amount,
+                cost: `₹${(Number(item.price) * item.amount).toFixed(2)}`
+            })),
+            total: `₹${total.toFixed(2)}`
+        };
 
-        // Add title and user information
-        doc.setFontSize(20);
-        doc.text('Order Summary', 14, 22);
-        doc.setFontSize(12);
-        doc.text(`Customer: ${session?.user?.name || 'N/A'}`, 14, 32);
-        doc.text(`Address: ${session?.user?.address || 'N/A'}`, 14, 42);
-        doc.text(`Phone Number: ${session?.user?.number || 'N/A'}`, 14, 52);
+        setSubmittedData(formData);
 
-        // Table setup
-        const tableData = cartItems.map((item, idx) => [
-            idx + 1,
-            item.names[0],
-            `₹${item.price}`,
-            item.amount,
-            `₹${(Number(item.price) * item.amount).toFixed(2)}`
-        ]);
+        try {
+            const response = await axios.post('/api/place-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        (doc as any).autoTable({
-            head: [['#', 'Name', 'Price/kg', 'Weight(kg)', 'Cost']],
-            body: tableData,
-            startY: 60,
-            theme: 'grid',
-            headStyles: { fillColor: [44, 62, 80] },
-            bodyStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-                0: { cellWidth: 10 }, // S. No. column
-                1: { cellWidth: 50 }, // Name column
-                2: { cellWidth: 30, halign: 'right' }, // Price/kg column
-                3: { cellWidth: 30, halign: 'right' }, // Weight(kg) column
-                4: { cellWidth: 30, halign: 'right' }, // Cost column
-            },
-            styles: { fontSize: 10, font: "courier" },
-        });
+            const result = await response.json();
 
-        // Total
-        doc.setFontSize(14);
-        doc.text(`Total: ₹${total.toFixed(2)}`, 14, (doc as any).lastAutoTable.finalY + 10);
-
-        // Disclaimer
-        doc.setFontSize(10);
-        doc.text('Disclaimer:', 14, (doc as any).lastAutoTable.finalY + 20);
-        doc.setFontSize(8);
-
-        // Save the PDF with a specific file name
-        doc.save('order_summary.pdf');
+            if (response.ok) {
+                console.log('Order placed successfully', result);
+            } else {
+                console.error('Failed to place order', result);
+            }
+        } catch (error) {
+            console.error('Error placing order', error);
+        }
 
         setIsSubmitting(false);
     };
+
+    console.log(submittedData)
 
     useEffect(() => {
         const calculatedTotal = cartItems.reduce((acc, item) => acc + (Number(item.price) * item.amount), 0);
@@ -82,6 +86,8 @@ const Page = () => {
             setTotal(calculatedTotal);
         }
     }, [cartItems]);
+
+    console.log(session)
 
     if (!isMounted) {
         return null;
@@ -176,6 +182,7 @@ const Page = () => {
                     <span>Total: <span className='pl-2'>₹ {total.toFixed(2)}</span></span>
                 </div>
             </div>
+
             <div className='w-full px-4 mb-4 flex justify-center flex-wrap'>
                 {(total - 50) < 250 && <h3 className='text-green-700 text-xl animate-pulse duration-550 bg-white w-1/2 text-center mb-3 rounded-xl'>Delivery is free above ₹250</h3>}
                 <div className='bg-yellow-100 text-yellow-700 p-4 rounded-lg w-full mb-8'>
@@ -190,6 +197,24 @@ const Page = () => {
                     </p>
                 </div>
             </div>
+
+            {submittedData && (
+                <div className='w-full mt-8 p-4 rounded-lg'>
+                    <h3 className='font-bold text-xl mb-4'>Submitted Data:</h3>
+                    <p><strong>Customer:</strong> {submittedData.customer}</p>
+                    <p><strong>Address:</strong> {submittedData.address}</p>
+                    <p><strong>Phone Number:</strong> {submittedData.phoneNumber}</p>
+                    <h4 className='font-bold mt-4'>Items:</h4>
+                    <ul className='list-disc pl-5'>
+                        {submittedData.cartItems.map((item, idx) => (
+                            <li key={idx}>
+                                {item.name} - {item.amount}kg @ ₹{item.price}/kg - Cost: ₹{item.cost}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className='mt-4 font-bold'>Total: ₹{submittedData.total}</p>
+                </div>
+            )}
         </div>
     );
 }

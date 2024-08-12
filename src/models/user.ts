@@ -3,6 +3,8 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface bucket extends Document {
     name: string
     weight: number
+    price: number
+    total: number
     createAt: Date
 }
 

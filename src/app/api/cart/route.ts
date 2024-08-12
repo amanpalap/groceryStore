@@ -2,7 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
-import userModel from "@/models/user";
+import OrdersModel from "@/models/cart";
 
 export async function POST(request: NextRequest, response: NextResponse) {
     await dbConnect()
@@ -16,20 +16,30 @@ export async function POST(request: NextRequest, response: NextResponse) {
             }, { status: 401 });
         }
 
-        const user = await userModel.findById(session.user._id);
+        const { customer, address, phoneNumber, cartItems, total } = await request.json();
 
-        if (!user) {
-            return NextResponse.json({
-                success: false,
-                message: "failed to get user",
-            }, { status: 404 });
-        }
+        const newOrder = new OrdersModel({
+            customer,
+            address,
+            phoneNumber,
+            cartItems,
+            total,
+            orderDate: new Date(),
+        });
+
+        await newOrder.save();
+
+        return NextResponse.json({
+            success: true,
+            message: "Order placed successfully",
+            order: newOrder,
+        }, { status: 201 });
 
     } catch (error) {
-        console.log("error getting Cart", error)
+        console.log("Failed to Place order", error)
         return NextResponse.json({
             success: false,
-            message: "failed to Update Cart",
+            message: "Failed to Place order",
         }, { status: 404 });
     }
 }
