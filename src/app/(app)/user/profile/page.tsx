@@ -1,6 +1,6 @@
 'use client'
 import { userUpdateSchemas } from "@/schemas/userUpdateSchemas"
-import { useSession } from "next-auth/react";
+import { useSession, signIn, getSession, signOut } from "next-auth/react";
 import {
     Form,
     FormControl,
@@ -21,10 +21,12 @@ import { useToast } from "@/components/ui/use-toast"
 import { ApiResponse } from "@/types/ApiResponse"
 import { UserData } from "@/types/UserData"
 const page = () => {
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
 
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [updatedAddress, setUpdatedAddress] = useState("")
+    const [updatedNumber, setUpdatedNumber] = useState("")
     const [data, setData] = useState<UserData | null>(null)
     const form = useForm<z.infer<typeof userUpdateSchemas>>({
         resolver: zodResolver(userUpdateSchemas),
@@ -36,6 +38,18 @@ const page = () => {
             email: '',
         }
     })
+
+    const handleUserDataUpdate = async () => {
+        // Assuming user data is updated here, e.g., via an API request
+
+        // Force the session to re-fetch and update the token
+        await signOut({ redirect: false });
+        await signIn("credentials", { redirect: false });
+
+        // Optionally, refresh the session manually if needed
+        const updatedSession = await getSession();
+        console.log("Session after user data update:", updatedSession);
+    }
 
     const { reset } = form;
 
@@ -50,7 +64,7 @@ const page = () => {
                 title: 'User updated successfully',
                 description: "User updated successfully"
             })
-            console.log(data)
+            handleUserDataUpdate()
             reset(data)
         } catch (error) {
             console.log("Error while verifying", error)
@@ -69,13 +83,12 @@ const page = () => {
             setIsSubmitting(false);
         }
     }
+
     useEffect(() => {
         const handleData = async () => {
-            console.log("opening")
             try {
                 const response = await axios.get('/api/profile')
                 const data = response.data.data
-                console.log("Data:", data)
                 setData(data)
                 reset(data)
             } catch (error) {
@@ -118,6 +131,10 @@ const page = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setUpdatedAddress(e.target.value);
+                                            }}
                                         />
                                     </FormControl>
                                     {error?.message && <FormMessage className="text-xs"> {error.message}</FormMessage>}
@@ -133,6 +150,10 @@ const page = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setUpdatedNumber(e.target.value);
+                                            }}
                                         />
                                     </FormControl>
                                     {error?.message && <FormMessage className="text-xs"> {error.message}</FormMessage>}

@@ -56,7 +56,11 @@ const OrderSchema: Schema<OrderDocument> = new Schema<OrderDocument>({
         type: String,
         required: true
     },
-    orderDate: { type: Date, default: Date.now, required: true },
+    orderDate: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
 });
 
 const OrdersModel: Model<OrderDocument> = mongoose.models.Order || mongoose.model<OrderDocument>('Order', OrderSchema);

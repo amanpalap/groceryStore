@@ -30,7 +30,6 @@ export const authOptions: NextAuthOptions = {
                     if (!isPasswordCorrect) {
                         throw new Error('Password is incorrect')
                     } else {
-                        console.log(user)
                         return user
                     }
                 } catch (error: any) {
@@ -41,6 +40,18 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token._id = user._id?.toString()
+                token.isVerified = user.isVerified
+                token.fullName = (user.firstName + " " + user.lastName).toString()
+                token.email = user.email
+                token.address = user.address
+                token.number = user.number
+                token.isAdmin = user.isAdmin
+            }
+            return token
+        },
         async session({ session, token }) {
             if (token) {
                 session.user._id = token._id
@@ -53,18 +64,6 @@ export const authOptions: NextAuthOptions = {
             }
             return session
         },
-        async jwt({ token, user }) {
-            if (user) {
-                token._id = user._id?.toString()
-                token.isVerified = user.isVerified
-                token.fullName = (user.firstName + " " + user.lastName).toString()
-                token.email = user.email
-                token.address = user.address
-                token.number = user.number
-                token.isAdmin = user.isAdmin
-            }
-            return token
-        }
     },
     pages: {
         signIn: '/login',

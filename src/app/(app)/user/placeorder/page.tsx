@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import axios, { AxiosError } from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import { clear } from '@/lib/store/features/cart/cartSlice';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface CartItem {
     name: string;
@@ -29,15 +29,17 @@ const Page = () => {
     const dispatch = useAppDispatch()
     const cartItems = useAppSelector((state) => state.cart);
     const [isMounted, setIsMounted] = useState(false);
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
     const [total, setTotal] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedData, setSubmittedData] = useState<FormData | null>(null);
     const { toast } = useToast()
+    const router = useRouter()
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -57,7 +59,7 @@ const Page = () => {
         };
 
         setSubmittedData(formData);
-        console.log("1", formData)
+        console.log("1", submittedData)
 
         try {
             const response = await axios.post('/api/cart', formData);
@@ -67,7 +69,7 @@ const Page = () => {
                 description: "Your order has been successfully placed.",
             });
             dispatch(clear())
-            router.replace()
+            // router.replace('/home')
             console.log(formData);
 
         } catch (error) {
@@ -87,9 +89,11 @@ const Page = () => {
         }
     };
 
+    console.log(session)
+
     useEffect(() => {
         const calculatedTotal = cartItems.reduce((acc, item) => acc + (Number(item.price) * item.amount), 0);
-        if (calculatedTotal < 250) {
+        if (calculatedTotal < 250 && calculatedTotal > 0) {
             setTotal(calculatedTotal + 50);
         } else {
             setTotal(calculatedTotal);
@@ -118,7 +122,7 @@ const Page = () => {
 
             <div className='grid grid-cols-1 z-20 bg-slate-800 rounded-xl my-4 p-4'>
                 {/* Heading Row */}
-                <div className='flex items-center text-red-200 justify-between font-bold mb-4'>
+                <div className='flex lg:text-md text-sm items-center text-red-200 justify-between font-bold mb-4'>
                     <div className='lg:w-[50%] w-[30%] pl-6 lg:pl-0'>Name</div>
                     <div className='lg:w-[50%] w-[60%] flex flex-wrap justify-between'>
                         <div className='lg:w-1/3'>Price/kg</div>
@@ -152,9 +156,9 @@ const Page = () => {
                                         />
                                     </div>
                                     <X size={15} strokeWidth={3} />
-                                    <div className="lg:px-3 w-[15%] justify-end flex">
+                                    <div className="lg:px-3 w-[20%] justify-end flex">
                                         <Input
-                                            className='h-6 bg-slate-800'
+                                            className='h-6 w-full bg-slate-800'
                                             name={`weight-${idx}`}
                                             value={item.amount}
                                             readOnly
@@ -165,7 +169,7 @@ const Page = () => {
                                         <Input
                                             className='h-6 disabled:opacity-100 text-right bg-slate-800'
                                             name={`amount-${idx}`}
-                                            value={(Number(item.price) * item.amount).toFixed(2)}
+                                            value={(Number(item.price) * item.amount)}
                                             readOnly
                                         />
                                     </div>
@@ -174,7 +178,7 @@ const Page = () => {
                         </div>
                     ))}
 
-                    <Button className="lg:w-[89%] w-[87%] fixed bottom-2 py-4 text-xl bg-white rounded-xl text-black font-bold font-mono" type="submit">
+                    {total > 0 && <Button className="lg:w-[89%] w-[84%]  fixed bottom-2 py-4 text-xl bg-white rounded-xl text-black font-bold font-mono self-center" type="submit">
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -183,7 +187,7 @@ const Page = () => {
                         ) : (
                             `Place Order (₹${total.toFixed(2)})`
                         )}
-                    </Button>
+                    </Button>}
                 </form>
 
                 <div className='justify-end flex font-bold font-sans lg:px-3 mt-4 text-red-500'>
@@ -192,7 +196,7 @@ const Page = () => {
             </div>
 
             <div className='w-full px-4 mb-4 flex justify-center flex-wrap'>
-                {(total - 50) < 250 && <h3 className='text-green-700 text-xl animate-pulse duration-550 bg-white w-1/2 text-center mb-3 rounded-xl'>Delivery is free above ₹250</h3>}
+                {(total - 50) < 250 && <h3 className='text-green-700 text-xl animate-pulse duration-550 bg-white w-full font-extrabold lg:w-1/2 text-center mb-3 rounded-xl'>Delivery is free above ₹250</h3>}
                 <div className='bg-yellow-100 text-yellow-700 p-4 rounded-lg w-full mb-8'>
                     <h3 className='font-bold text-lg mb-2'>Disclaimer</h3>
                     <p className='text-sm'>

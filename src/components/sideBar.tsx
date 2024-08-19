@@ -90,7 +90,7 @@ export function SidebarDemo() {
                             </div>
                             )
                         }
-                        {session && session.user && session.user.isAdmin && <Link href={"/about"} className="w-full flex flex-grow space-x-4">
+                        {session && session.user && session.user.isAdmin && <Link href={"/orders"} className="w-full flex flex-grow space-x-4">
                             <span className="flex">
                                 <Logs className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0 rotate-180" />
                             </span>
