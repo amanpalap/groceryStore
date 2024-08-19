@@ -48,9 +48,9 @@ const Page = () => {
         handleData()
     }, [])
     return (
-        <div className='w-full grid p-2 full'>
+        <div className='w-full grid p-2'>
             <h1 className='w-full font-extrabold text-5xl mb-8 text-center'>Your Orders</h1>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-8'>
+            <div className='grid grid-cols-1 gap-x-8 w-full border-2'>
                 {data.map((user, idx) => (
                     <div key={idx} className='grid w-full bg-slate-800 rounded-3xl overflow-hidden my-4 p-2'>
                         <div className='flex flex-wrap py-1 w-full'>
