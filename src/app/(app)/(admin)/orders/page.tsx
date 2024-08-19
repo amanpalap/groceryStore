@@ -29,7 +29,7 @@ const Page = () => {
     useEffect(() => {
         const handleData = async () => {
             try {
-                const response = await axios.post('/api/orders')
+                const response = await axios.get('/api/orders')
                 setData(response.data.data)
             } catch (error) {
                 console.log("error getting orders", error)
