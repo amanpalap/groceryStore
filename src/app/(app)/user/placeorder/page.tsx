@@ -9,6 +9,14 @@ import axios, { AxiosError } from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import { clear } from '@/lib/store/features/cart/cartSlice';
 import { useRouter } from 'next/navigation';
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { userUpdateSchemas } from '@/schemas/userUpdateSchemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ApiResponse } from '@/types/ApiResponse';
+import { UserData } from '@/types/UserData';
+import Link from 'next/link';
+
 
 interface CartItem {
     name: string;
@@ -35,20 +43,59 @@ const Page = () => {
     const [submittedData, setSubmittedData] = useState<FormData | null>(null);
     const { toast } = useToast()
     const router = useRouter()
+    const [data, setData] = useState<UserData | null>(null)
+
+    const form = useForm<z.infer<typeof userUpdateSchemas>>({
+        resolver: zodResolver(userUpdateSchemas),
+        defaultValues: {
+            firstName: '',
+            lastName: '',
+            address: '',
+            number: '',
+            email: '',
+        }
+    })
+
+
+    const { reset } = form;
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
+    useEffect(() => {
+        const handleData = async () => {
+            try {
+                const response = await axios.get('/api/profile')
+                const data = response.data.data
+                setData(data)
+                reset(data)
+            } catch (error) {
+                console.log("Error while login", error)
+
+                let axiosError = error as AxiosError<ApiResponse>
+
+                let errorMessage = axiosError.response?.data.message ||
+                    ('There was error while getting profile. Please try again.');
+
+                toast({
+                    title: 'Updation Failed',
+                    description: errorMessage,
+                    variant: 'destructive',
+                });
+            }
+        }
+        handleData()
+    }, [reset])
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsSubmitting(true);
 
         const formData = {
-            customer: session?.user?.fullName || 'N/A',
-            address: session?.user?.address || 'N/A',
-            phoneNumber: session?.user?.number || 'N/A',
+            customer: (data?.firstName! + data?.lastName) || 'N/A',
+            address: data?.address || 'N/A',
+            phoneNumber: data?.number || 'N/A',
             cartItems: cartItems.map(item => ({
                 name: item.names[0],
                 price: `₹${item.price}`,
@@ -109,12 +156,14 @@ const Page = () => {
         <div className='w-full grid lg:p-8 p-4 full'>
             <h1 className='w-full font-extrabold text-5xl mb-8 text-center'>Placing Order</h1>
             <div className='w-full px-4'>
-                {session && session.user &&
-                    (<div className='full font-mono text-red-500'>
-                        <h3 className='text-xl font-extrabold text-red-300'>Address:</h3>
-                        {session.user.address || 'N/A'}
+                {data &&
+                    (<div className='w-full text-sm flex-wrap items-center flex justify-between text-red-500 border-2'>
+                        <h3 className='font-extrabold text-red-300'>Address: </h3>
+                        <Link className='text-sm bg-white font-extrabold px-2 rounded text-black py-0.5' href={'/user/profile'}>Change Address
+                        </Link>
+                        <p className='w-full'>{data?.address || 'N/A'}</p>
                         <div className='w-full'>
-                            <span className='font-extrabold text-red-300'>Phone Number:</span> {session.user.number || 'N/A'}
+                            <span className='font-extrabold text-red-300'>Phone Number:</span> {data?.number || 'N/A'}
                         </div>
                     </div>)
                 }
@@ -122,7 +171,7 @@ const Page = () => {
 
             <div className='grid grid-cols-1 z-20 bg-slate-800 rounded-xl my-4 p-4'>
                 {/* Heading Row */}
-                <div className='flex lg:text-md text-sm items-center text-red-200 justify-between font-bold mb-4'>
+                <div className='flex lg:text-md text-xs items-center text-red-200 justify-between font-extrabold mb-4'>
                     <div className='lg:w-[50%] w-[30%] pl-6 lg:pl-0'>Name</div>
                     <div className='lg:w-[50%] w-[60%] flex flex-wrap justify-between'>
                         <div className='lg:w-1/3'>Price/kg</div>
@@ -134,12 +183,12 @@ const Page = () => {
                 <form onSubmit={onSubmit} className="justify-between w-full flex flex-wrap bg-transparent z-50">
                     {cartItems.map((item, idx) => (
                         <div key={item.id} className='grid w-full'>
-                            <div className='flex items-center -z-10 justify-between flex-wrap py-2 w-full'>
+                            <div className='flex items-center -z-10 justify-between flex-wrap py-2 w-full text-xs'>
                                 <div className='flex items-center flex-wrap w-[40%] lg:w-[35%]'>
                                     <span className='lg:w-[2%] w-[9%] text-xs'>{idx + 1}.</span>
                                     <div className="lg:px-3 w-[85%] lg:w-[90%] justify-end focus: flex">
                                         <Input
-                                            className='h-6 bg-slate-800'
+                                            className='h-6 text-xs bg-slate-800'
                                             name={`name-${idx}`}
                                             value={item.names[0]}
                                             readOnly
@@ -147,29 +196,29 @@ const Page = () => {
                                     </div>
                                 </div>
                                 <div className='lg:w-[50%] w-[60%] flex flex-wrap justify-between  items-center'>
-                                    <div className="lg:px-3 w-[30%] lg:w-[15%] justify-end flex">
+                                    <div className="lg:px-3 w-[20%] lg:w-[15%] justify-end flex">
                                         <Input
-                                            className='h-6 bg-slate-800'
+                                            className='h-6 text-xs bg-slate-800'
                                             name={`price-${idx}`}
-                                            value={item.price}
+                                            value={(item.price)}
                                             readOnly
                                         />
                                     </div>
                                     <X size={15} strokeWidth={3} />
-                                    <div className="lg:px-3 w-[20%] justify-end flex">
+                                    <div className="lg:px-3 w-[25%] justify-end flex">
                                         <Input
-                                            className='h-6 w-full bg-slate-800'
+                                            className='h-6 text-xs w-full bg-slate-800'
                                             name={`weight-${idx}`}
-                                            value={item.amount}
+                                            value={item.amount.toFixed(2)}
                                             readOnly
                                         />
                                     </div>
                                     <Equal size={15} strokeWidth={3} />
                                     <div className="lg:px-3 w-[30%] lg:w-[15%] justify-end flex">
                                         <Input
-                                            className='h-6 disabled:opacity-100 text-right bg-slate-800'
+                                            className='h-6 disabled:opacity-100 text-right text-xs bg-slate-800'
                                             name={`amount-${idx}`}
-                                            value={(Number(item.price) * item.amount)}
+                                            value={(Number(item.price) * item.amount).toFixed(2)}
                                             readOnly
                                         />
                                     </div>
@@ -178,7 +227,7 @@ const Page = () => {
                         </div>
                     ))}
 
-                    {total > 0 && <Button className="lg:w-[89%] w-[84%]  fixed bottom-2 py-4 text-xl bg-white rounded-xl text-black font-bold font-mono self-center" type="submit">
+                    {total > 0 && <Button className="lg:w-[89%] w-[83%] fixed bottom-2 py-4 text-xl bg-white rounded-xl text-black font-bold font-mono self-center" type="submit">
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

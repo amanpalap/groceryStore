@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from 'next/server';
 export { default } from "next-auth/middleware"
 
 export async function middleware(request: NextRequest) {
-    console.log("middleware running")
     try {
         const cookies = request.cookies;
         const token = cookies.get('next-auth.session-token')
@@ -41,6 +40,7 @@ export const config = {
     // Use a more specific matcher to avoid potential ReDoS vulnerabilities
     matcher: [
         '/user/:path*',
+        '/orders',
         '/login',
         '/sign-up',
         '/verify',

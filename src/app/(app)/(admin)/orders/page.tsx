@@ -1,10 +1,9 @@
 'use client'
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios'
-import Link from 'next/link';
 import { ApiResponse } from '@/types/ApiResponse';
 import { useToast } from '@/components/ui/use-toast';
+
 
 interface ItemData {
     name: string

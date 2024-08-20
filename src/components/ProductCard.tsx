@@ -2,7 +2,6 @@ import { add } from '@/lib/store/features/cart/cartSlice';
 import { useAppDispatch } from '@/lib/store/hooks/hooks';
 import { IndianRupee, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
-import Cookies from 'js-cookie';
 
 interface Product {
     id: number;
@@ -15,7 +14,6 @@ interface Product {
 
 export default function ProductCard() {
 
-    const cookies = Cookies.get('token') || ''
     const dispatch = useAppDispatch()
 
     const products: Product[] = [
@@ -69,7 +67,6 @@ export default function ProductCard() {
     const handleAddToCart = (product: Product) => {
         dispatch(add(product))
         console.log(product)
-        console.log(cookies)
     };
 
     return (

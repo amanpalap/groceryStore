@@ -3,7 +3,6 @@ import userModel from "@/models/user";
 import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
 import { authOptions } from "../../auth/[...nextauth]/options";
-import { getToken } from "next-auth/jwt";
 
 
 export async function PUT(request: NextRequest) {

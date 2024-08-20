@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Label } from '@radix-ui/react-label';
 
 
+
 const Page = () => {
     const cartItems = useAppSelector((state) => state.cart);
     const dispatch = useAppDispatch();
@@ -56,21 +57,21 @@ const Page = () => {
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-8'>
                 {cartItems.map((item, idx) => (
                     <div key={item.id} className='grid w-full bg-slate-800 rounded-3xl overflow-hidden my-4 '>
-                        <div className="items-between justify-evenly w-full space-x-5 flex">
+                        <div className="items-between justify-evenly w-full space-x-2 flex">
                             <div className='w-[55%]'>
                                 <Image src={item.image} className="object-center w-full h-40" alt={`${item.names[0]} image`} width={"1000"} height={"1000"} />
                             </div>
                             <div className='flex w-[60%] flex-wrap py-1'>
-                                <h3 className='text-2xl h-fit w-full'>
+                                <h3 className='text-lg overflow-hidden w-full'>
                                     {item.names[0]}
                                 </h3>
 
                                 <div className='w-full'>
-                                    <Label className='ml-2'>Weight</Label>
-                                    <div className='flex items-center w-full px-2'>
-                                        <div className='flex w-[45%] items-center'>
+                                    <Label className='ml-2 text-xs'>Weight</Label>
+                                    <div className='flex items-center w-full'>
+                                        <div className='flex w-[50%] items-center'>
                                             <Input
-                                                className='w-full input-no-spinner'
+                                                className='w-full h-8 input-no-spinner'
                                                 type="number"
                                                 value={item.amount.toFixed(2) || ""}
                                                 placeholder='0'

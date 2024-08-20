@@ -20,13 +20,14 @@ import axios, { AxiosError } from "axios"
 import { useToast } from "@/components/ui/use-toast"
 import { ApiResponse } from "@/types/ApiResponse"
 import { UserData } from "@/types/UserData"
+
+
 const page = () => {
     const { data: session, update } = useSession();
-
+    const [active, setActive] = useState(false)
+    const [password, setPassword] = useState("")
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [updatedAddress, setUpdatedAddress] = useState("")
-    const [updatedNumber, setUpdatedNumber] = useState("")
     const [data, setData] = useState<UserData | null>(null)
     const form = useForm<z.infer<typeof userUpdateSchemas>>({
         resolver: zodResolver(userUpdateSchemas),
@@ -39,23 +40,13 @@ const page = () => {
         }
     })
 
-    const handleUserDataUpdate = async () => {
-        // Assuming user data is updated here, e.g., via an API request
-
-        // Force the session to re-fetch and update the token
-        await signOut({ redirect: false });
-        await signIn("credentials", { redirect: false });
-
-        // Optionally, refresh the session manually if needed
-        const updatedSession = await getSession();
-        console.log("Session after user data update:", updatedSession);
-    }
 
     const { reset } = form;
 
     const capitalizeFirstLetter = (str: string): string => {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
     }
+
     const onSubmit = async (data: z.infer<typeof userUpdateSchemas>) => {
         setIsSubmitting(true);
         try {
@@ -64,7 +55,7 @@ const page = () => {
                 title: 'User updated successfully',
                 description: "User updated successfully"
             })
-            handleUserDataUpdate()
+            setActive(true)
             reset(data)
         } catch (error) {
             console.log("Error while verifying", error)
@@ -75,12 +66,13 @@ const page = () => {
                 ('There was a problem in updating user. Please try again.');
 
             toast({
-                title: 'Verifying Failed',
+                title: 'Password Incorrect',
                 description: errorMessage,
                 variant: 'destructive',
             });
         } finally {
             setIsSubmitting(false);
+            setActive(false)
         }
     }
 
@@ -131,10 +123,6 @@ const page = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setUpdatedAddress(e.target.value);
-                                            }}
                                         />
                                     </FormControl>
                                     {error?.message && <FormMessage className="text-xs"> {error.message}</FormMessage>}
@@ -150,17 +138,12 @@ const page = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setUpdatedNumber(e.target.value);
-                                            }}
                                         />
                                     </FormControl>
                                     {error?.message && <FormMessage className="text-xs"> {error.message}</FormMessage>}
                                 </FormItem>
                             )}
                         />
-
                         <Button className="w-full" type="submit">{isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -173,6 +156,7 @@ const page = () => {
                     </form>
                 </Form>
             </div>
+
         </div>
     )
 }
