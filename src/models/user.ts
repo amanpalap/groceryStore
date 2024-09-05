@@ -61,6 +61,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     },
     address: {
         type: String,
+        default: null
     },
     number: {
         type: String,

@@ -41,7 +41,7 @@ export async function POST(request: Request) {
                 lastName,
                 email,
                 password: hashedPassword,
-                address: '',
+                address: null,
                 otp: newOTP,
                 otpExpiry: newExpiry,
                 number: null,
