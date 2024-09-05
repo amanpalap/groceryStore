@@ -44,7 +44,7 @@ export async function POST(request: Request) {
                 address: '',
                 otp: newOTP,
                 otpExpiry: newExpiry,
-                number: '',
+                number: null,
                 isVerified: false,
                 buckets: [],
             })
