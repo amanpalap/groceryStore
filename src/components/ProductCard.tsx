@@ -2,6 +2,9 @@ import { add } from '@/lib/store/features/cart/cartSlice';
 import { useAppDispatch } from '@/lib/store/hooks/hooks';
 import { IndianRupee, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
+import { useToast } from '@/components/ui/use-toast'
+import { isAuthenticated } from '@/helpers/isUserLoggedIn';
+import { useSession } from 'next-auth/react';
 
 interface Product {
     id: number;
@@ -14,6 +17,8 @@ interface Product {
 
 export default function ProductCard() {
 
+    const { data: session } = useSession()
+    const { toast } = useToast()
     const dispatch = useAppDispatch()
 
     const products: Product[] = [
@@ -66,6 +71,19 @@ export default function ProductCard() {
 
     const handleAddToCart = (product: Product) => {
         dispatch(add(product))
+        if (session) {
+            toast({
+                title: `${product.names[0]}`,
+                description: " Successfully added to cart",
+                variant: 'default'
+            })
+        } else {
+            toast({
+                title: "Sign-Up to access cart",
+                description: "Please Login",
+                variant: 'destructive'
+            })
+        }
         console.log(product)
     };
 

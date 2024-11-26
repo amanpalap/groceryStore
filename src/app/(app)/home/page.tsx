@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 
 
 export default function page() {
+
     const router = useRouter()
     useEffect(() => {
         router.refresh()
