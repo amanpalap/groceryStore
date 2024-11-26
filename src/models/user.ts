@@ -65,6 +65,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     },
     number: {
         type: String,
+        unique: false,
         default: null,
     },
     otp: {
